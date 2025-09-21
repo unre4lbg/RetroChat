@@ -26,21 +26,27 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
     initializeUser();
     fetchMessages();
     fetchAllUsers();
-    
+  }, []);
+
+  useEffect(() => {
+    if (!currentUser) return;
+
     const messageSubscription = supabase
       .channel('messages')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
         const newMessage = payload.new as Message;
         
         if (newMessage.receiver_id) {
-          if (newMessage.user_id === currentUser?.id || newMessage.receiver_id === currentUser?.id) {
+          // Private message
+          if (newMessage.user_id === currentUser.id || newMessage.receiver_id === currentUser.id) {
             const chatKey = getChatKey(newMessage.user_id, newMessage.receiver_id);
             setPrivateChats(prev => ({
               ...prev,
               [chatKey]: [...(prev[chatKey] || []), newMessage]
             }));
             
-            if (newMessage.user_id !== currentUser?.id) {
+            // Add unread count if message is not from current user
+            if (newMessage.user_id !== currentUser.id) {
               setUnreadCounts(prev => ({
                 ...prev,
                 [chatKey]: (prev[chatKey] || 0) + 1
@@ -48,6 +54,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
             }
           }
         } else {
+          // Public message
           setMessages(prev => [...prev, newMessage]);
         }
       })
@@ -56,7 +63,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
     return () => {
       messageSubscription.unsubscribe();
     };
-  }, []);
+  }, [currentUser]);
 
   useEffect(() => {
     if (currentUser && userProfile) {
@@ -217,10 +224,16 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
     setSelectedUser(user);
     const chatKey = getChatKey(currentUser.id, user.user_id);
     
-    if (!privateChats[chatKey]) {
-      fetchPrivateMessages(user.user_id);
-    }
+    // Always ensure we have the chat in privateChats
+    setPrivateChats(prev => ({
+      ...prev,
+      [chatKey]: prev[chatKey] || []
+    }));
     
+    // Fetch messages if we don't have them yet
+    fetchPrivateMessages(user.user_id);
+    
+    // Clear unread count
     setUnreadCounts(prev => ({
       ...prev,
       [chatKey]: 0
@@ -234,6 +247,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
   };
 
   const fetchPrivateMessages = async (otherUserId: string) => {
+    if (!currentUser) return;
+    
     try {
       const { data, error } = await supabase
         .from('messages')
@@ -250,7 +265,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
         [chatKey]: data || []
       }));
     } catch (error) {
-      console.error('Error fetching private messages:', error);
+      // Silent error handling
     }
   };
 
@@ -285,6 +300,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
   };
 
   const getActiveChatUsers = () => {
+    if (!currentUser) return [];
+    
     return Object.keys(privateChats).map(chatKey => {
       const [userId1, userId2] = chatKey.split('-');
       const otherUserId = userId1 === currentUser.id ? userId2 : userId1;
@@ -335,21 +352,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
             {/* Online Users Section */}
             <div className="mb-3">
               <h3 className="text-xs font-bold text-black mb-2">Online Users ({filteredUsers.length})</h3>
-              <div className="text-xs text-gray-600 mb-1">
-                Debug: {onlineUsers.length} online IDs, {allUsers.length} total users, Current: {currentUser?.id?.substring(0, 8)}...
-              </div>
-              <div className="text-xs text-gray-600 mb-1">
-                <button 
-                  onClick={() => {
-                    console.log('🔄 Manual presence refresh');
-                    const channel = supabase.channel('online-users-presence');
-                    console.log('Current presence state:', channel.presenceState());
-                  }}
-                  className="xp-button text-xs px-2 py-1"
-                >
-                  Manual Refresh
-                </button>
-              </div>
               <div className="mb-2">
                 <div className="flex items-center xp-input-container">
                   <Search className="h-3 w-3 text-gray-500 mr-1" />
@@ -371,18 +373,12 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
                     className="xp-listitem p-2 cursor-pointer text-xs flex items-center"
                   >
                     <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                    <span className="text-black">{user.username} (ID: {user.user_id.substring(0, 8)}...)</span>
+                    <span className="text-black">{user.username}</span>
                   </div>
                 ))}
                 {filteredUsers.length === 0 && (
                   <div className="p-2 text-xs text-gray-500 text-center">
-                    <div>No online users found</div>
-                    <div className="mt-1">
-                      {onlineUsers.length > 0 ? 
-                        `Found ${onlineUsers.length} online IDs but no matching users` : 
-                        'No presence data received'
-                      }
-                    </div>
+                    No online users found
                   </div>
                 )}
               </div>
