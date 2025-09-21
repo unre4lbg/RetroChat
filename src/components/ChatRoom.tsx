@@ -422,7 +422,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
                   key={message.id}
                   className="msn-message"
                 >
-                  <span className="msn-username">
+                  <span className={`msn-username ${message.user_id === currentUser?.id ? 'own-message' : ''}`}>
                     {message.username}
                     {' says:'}
                   </span>
