@@ -60,23 +60,10 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
 
   useEffect(() => {
     if (currentUser && userProfile) {
-      trackOnlineUsers();
+      const cleanup = trackOnlineUsers();
+      return cleanup;
     }
   }, [currentUser, userProfile]);
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    
-    if (currentUser && userProfile) {
-      interval = setInterval(() => {
-        updateUserPresence();
-      }, 30000); // Update presence every 30 seconds
-    }
-
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [currentUser]);
-
   useEffect(() => {
     scrollToBottom();
   }, [messages, privateChats, selectedUser]);
@@ -136,9 +123,17 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
   const trackOnlineUsers = async () => {
     if (!currentUser) return;
 
+    console.log('🔄 STARTING PRESENCE TRACKING for user:', currentUser.id, userProfile?.username);
+
     try {
-      // Create a unique channel for presence
-      const channel = supabase.channel('online-users-presence');
+      // Create a unique channel for presence with proper config
+      const channel = supabase.channel('online-users-presence', {
+        config: {
+          presence: {
+            key: currentUser.id,
+          },
+        },
+      });
 
       channel
         .on('presence', { event: 'sync' }, () => {
@@ -171,32 +166,29 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
           console.log('Presence subscription status:', status);
           if (status === 'SUBSCRIBED') {
             console.log('Tracking presence for user:', currentUser.id, userProfile?.username);
-            await channel.track({
+            const trackResult = await channel.track({
               user_id: currentUser.id,
               username: userProfile?.username,
               online_at: new Date().toISOString(),
             });
+            console.log('📍 Track result:', trackResult);
+            
+            // Force a sync after tracking
+            setTimeout(() => {
+              console.log('🔄 Current state after tracking:', channel.presenceState());
+            }, 1000);
           }
         });
 
       return () => {
         console.log('Unsubscribing from presence channel');
-        channel.unsubscribe();
+        channel.untrack();
+        supabase.removeChannel(channel);
       };
     } catch (error) {
       console.error('Error setting up presence tracking:', error);
+      return () => {}; // Return empty cleanup function on error
     }
-  };
-
-  const updateUserPresence = async () => {
-    if (!currentUser) return;
-    
-    const channel = supabase.channel('online-users');
-    await channel.track({
-      user_id: currentUser.id,
-      username: userProfile?.username,
-      online_at: new Date().toISOString(),
-    });
   };
 
   const sendMessage = async (e: React.FormEvent) => {
@@ -352,7 +344,19 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
             <div className="mb-3">
               <h3 className="text-xs font-bold text-black mb-2">Online Users ({filteredUsers.length})</h3>
               <div className="text-xs text-gray-600 mb-1">
-                Debug: {onlineUsers.length} online IDs, {allUsers.length} total users
+                Debug: {onlineUsers.length} online IDs, {allUsers.length} total users, Current: {currentUser?.id?.substring(0, 8)}...
+              </div>
+              <div className="text-xs text-gray-600 mb-1">
+                <button 
+                  onClick={() => {
+                    console.log('🔄 Manual presence refresh');
+                    const channel = supabase.channel('online-users-presence');
+                    console.log('Current presence state:', channel.presenceState());
+                  }}
+                  className="xp-button text-xs px-2 py-1"
+                >
+                  Manual Refresh
+                </button>
               </div>
               <div className="mb-2">
                 <div className="flex items-center xp-input-container">
