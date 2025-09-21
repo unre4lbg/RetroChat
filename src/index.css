@@ -232,6 +232,38 @@ body {
   color: #000000;
 }
 
+.xp-listbox {
+  background: white;
+  border: 2px inset #ECE9D8;
+  border-radius: 2px;
+}
+
+.xp-listitem {
+  border-bottom: 1px solid #E0E0E0;
+}
+
+.xp-listitem:hover {
+  background: linear-gradient(90deg, #316AC5 0%, #4B8EF1 100%);
+  color: white;
+}
+
+.xp-listitem:hover span {
+  color: white !important;
+}
+
+.xp-input-container {
+  background: white;
+  border: 2px inset #ECE9D8;
+  border-radius: 2px;
+  padding: 2px 4px;
+}
+
+.xp-toolbar {
+  background: #ECE9D8;
+  border-top: 1px solid #FFFFFF;
+  border-bottom: 1px solid #ACA899;
+}
+
 /* Remove transitions for authentic XP feel */
 * {
   transition: none !important;
