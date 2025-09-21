@@ -269,9 +269,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                 </button>
                 <button 
                   onClick={onBack}
-                  className="w-5 h-4 xp-button text-xs"
+                  className="xp-titlebar-button xp-close-btn"
                 >
-                  <X className="h-2 w-2" />
+                  ×
                 </button>
               </div>
             </div>
