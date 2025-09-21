@@ -26,7 +26,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
     initializeUser();
     fetchMessages();
     fetchAllUsers();
-    trackOnlineUsers();
     
     const messageSubscription = supabase
       .channel('messages')
@@ -57,14 +56,25 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
     return () => {
       messageSubscription.unsubscribe();
     };
-  }, [currentUser]);
+  }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      updateUserPresence();
-    }, 30000); // Update presence every 30 seconds
+    if (currentUser && userProfile) {
+      trackOnlineUsers();
+    }
+  }, [currentUser, userProfile]);
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    
+    if (currentUser && userProfile) {
+      interval = setInterval(() => {
+        updateUserPresence();
+      }, 30000); // Update presence every 30 seconds
+    }
 
-    return () => clearInterval(interval);
+    return () => {
+      if (interval) clearInterval(interval);
+    };
   }, [currentUser]);
 
   useEffect(() => {
@@ -319,6 +329,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
             {/* Online Users Section */}
             <div className="mb-3">
               <h3 className="text-xs font-bold text-black mb-2">Online Users ({filteredUsers.length})</h3>
+              <div className="text-xs text-gray-600 mb-1">
+                Debug: {onlineUsers.length} online IDs, {allUsers.length} total users
+              </div>
               <div className="mb-2">
                 <div className="flex items-center xp-input-container">
                   <Search className="h-3 w-3 text-gray-500 mr-1" />
@@ -343,6 +356,11 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
                     <span className="text-black">{user.username}</span>
                   </div>
                 ))}
+                {filteredUsers.length === 0 && (
+                  <div className="p-2 text-xs text-gray-500 text-center">
+                    No online users found
+                  </div>
+                )}
               </div>
             </div>
 
