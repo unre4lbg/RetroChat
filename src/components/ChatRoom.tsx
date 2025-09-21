@@ -136,34 +136,56 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
   const trackOnlineUsers = async () => {
     if (!currentUser) return;
 
-    // Subscribe to presence changes
-    const channel = supabase.channel('online-users', {
-      config: {
-        presence: {
-          key: currentUser.id,
-        },
-      },
-    });
+    try {
+      // Create a unique channel for presence
+      const channel = supabase.channel('online-users-presence');
 
-    channel
-      .on('presence', { event: 'sync' }, () => {
-        const state = channel.presenceState();
-        const onlineUserIds = Object.keys(state);
-        setOnlineUsers(onlineUserIds);
-      })
-      .subscribe(async (status) => {
-        if (status === 'SUBSCRIBED') {
-          await channel.track({
-            user_id: currentUser.id,
-            username: userProfile?.username,
-            online_at: new Date().toISOString(),
+      channel
+        .on('presence', { event: 'sync' }, () => {
+          console.log('Presence sync event triggered');
+          const state = channel.presenceState();
+          console.log('Current presence state:', state);
+          
+          // Extract user IDs from presence state
+          const onlineUserIds: string[] = [];
+          Object.keys(state).forEach(key => {
+            const presences = state[key];
+            if (presences && presences.length > 0) {
+              const userId = presences[0].user_id;
+              if (userId && !onlineUserIds.includes(userId)) {
+                onlineUserIds.push(userId);
+              }
+            }
           });
-        }
-      });
+          
+          console.log('Extracted online user IDs:', onlineUserIds);
+          setOnlineUsers(onlineUserIds);
+        })
+        .on('presence', { event: 'join' }, ({ key, newPresences }) => {
+          console.log('User joined:', key, newPresences);
+        })
+        .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
+          console.log('User left:', key, leftPresences);
+        })
+        .subscribe(async (status) => {
+          console.log('Presence subscription status:', status);
+          if (status === 'SUBSCRIBED') {
+            console.log('Tracking presence for user:', currentUser.id, userProfile?.username);
+            await channel.track({
+              user_id: currentUser.id,
+              username: userProfile?.username,
+              online_at: new Date().toISOString(),
+            });
+          }
+        });
 
-    return () => {
-      channel.unsubscribe();
-    };
+      return () => {
+        console.log('Unsubscribing from presence channel');
+        channel.unsubscribe();
+      };
+    } catch (error) {
+      console.error('Error setting up presence tracking:', error);
+    }
   };
 
   const updateUserPresence = async () => {
@@ -353,12 +375,18 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
                     className="xp-listitem p-2 cursor-pointer text-xs flex items-center"
                   >
                     <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                    <span className="text-black">{user.username}</span>
+                    <span className="text-black">{user.username} (ID: {user.user_id.substring(0, 8)}...)</span>
                   </div>
                 ))}
                 {filteredUsers.length === 0 && (
                   <div className="p-2 text-xs text-gray-500 text-center">
-                    No online users found
+                    <div>No online users found</div>
+                    <div className="mt-1">
+                      {onlineUsers.length > 0 ? 
+                        `Found ${onlineUsers.length} online IDs but no matching users` : 
+                        'No presence data received'
+                      }
+                    </div>
                   </div>
                 )}
               </div>
