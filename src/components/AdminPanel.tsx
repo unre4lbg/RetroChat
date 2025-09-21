@@ -356,14 +356,13 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
             <span>Administrator Control Panel</span>
           </div>
           <div className="flex">
-            <button className="w-5 h-4 xp-button text-xs mr-1">
-              <Minimize2 className="h-2 w-2" />
-            </button>
-            <button 
+            <button className="xp-titlebar-button xp-minimize-btn">−</button>
+            <button className="xp-titlebar-button xp-maximize-btn">□</button>
+            <button
               onClick={onBack}
-              className="w-5 h-4 xp-button text-xs"
+              className="xp-titlebar-button xp-close-btn"
             >
-              <X className="h-2 w-2" />
+              ×
             </button>
           </div>
         </div>

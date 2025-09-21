@@ -83,47 +83,58 @@ body {
 .xp-titlebar-button {
   width: 21px;
   height: 21px;
-  background: linear-gradient(135deg, #ffffff 0%, #e6e6e6 50%, #cccccc 100%);
-  border: 1px solid #999999;
-  border-radius: 2px;
+  background: linear-gradient(180deg, #ffffff 0%, #f0f0f0 30%, #e0e0e0 70%, #d0d0d0 100%);
+  border: 1px outset #d4d0c8;
+  border-radius: 0;
   color: #000000;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   margin-left: 2px;
-  font-family: 'Marlett', 'Webdings', monospace;
+  font-family: 'Marlett', 'Webdings', 'MS Sans Serif', monospace;
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .xp-titlebar-button:hover {
-  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 50%, #d6d6d6 100%);
-  border-color: #0066cc;
+  background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 30%, #e5e5e5 70%, #d5d5d5 100%);
+  border: 1px outset #316ac5;
 }
 
 .xp-titlebar-button:active {
-  background: linear-gradient(135deg, #cccccc 0%, #e6e6e6 50%, #ffffff 100%);
-  border-color: #0066cc;
+  background: linear-gradient(180deg, #d0d0d0 0%, #e0e0e0 30%, #f0f0f0 70%, #ffffff 100%);
+  border: 1px inset #316ac5;
+  box-shadow: inset -1px -1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .xp-minimize-btn {
-  font-size: 10px;
-  padding-bottom: 8px;
+  font-size: 9px;
+  line-height: 1;
+  padding-bottom: 6px;
 }
 
 .xp-maximize-btn {
-  font-size: 10px;
+  font-size: 9px;
+  line-height: 1;
 }
 
 .xp-close-btn {
-  background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 50%, #f44336 100%);
-  border-color: #d32f2f;
+  background: linear-gradient(180deg, #ff9999 0%, #ff7777 30%, #ff5555 70%, #ff3333 100%);
+  border: 1px outset #cc0000;
   color: white;
+  font-weight: bold;
 }
 
 .xp-close-btn:hover {
-  background: linear-gradient(135deg, #ff7979 0%, #ff6b6b 50%, #ff5252 100%);
+  background: linear-gradient(180deg, #ffaaaa 0%, #ff8888 30%, #ff6666 70%, #ff4444 100%);
+  border: 1px outset #dd1111;
+}
+
+.xp-close-btn:active {
+  background: linear-gradient(180deg, #ff3333 0%, #ff5555 30%, #ff7777 70%, #ff9999 100%);
+  border: 1px inset #cc0000;
 }
 
 .xp-titlebar-inactive {

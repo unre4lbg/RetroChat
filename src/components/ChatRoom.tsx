@@ -312,7 +312,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
               </span>
             </div>
             <div className="flex">
-              <button className="xp-titlebar-button xp-minimize-btn">_</button>
+              <button className="xp-titlebar-button xp-minimize-btn">−</button>
               <button className="xp-titlebar-button xp-maximize-btn">□</button>
               <button onClick={handleLogout} className="xp-titlebar-button xp-close-btn">×</button>
             </div>
