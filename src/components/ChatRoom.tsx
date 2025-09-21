@@ -416,21 +416,21 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
           )}
 
           <div className="flex-1 p-2 bg-white overflow-y-auto">
-            <div className="space-y-1">
+            <div className="msn-chat-area">
               {getCurrentMessages().map((message) => (
                 <div
                   key={message.id}
-                  className={`p-2 rounded text-xs ${
+                  className={`msn-message ${
                     message.user_id === currentUser?.id
-                      ? 'xp-message-own ml-8'
-                      : 'xp-message-other mr-8'
+                      ? 'msn-message-own'
+                      : 'msn-message-other'
                   }`}
                 >
-                  <div className="font-bold text-xp-blue mb-1">
+                  <span className="msn-username">
                     {message.username}
-                  </div>
-                  <div className="text-black">{message.content}</div>
-                  <div className="text-xs text-gray-500 mt-1">
+                  </span>
+                  <div className="msn-message-content">{message.content}</div>
+                  <div className="msn-timestamp">
                     {new Date(message.created_at).toLocaleTimeString()}
                   </div>
                 </div>
@@ -518,21 +518,21 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
                 )}
                 
                 <div className="flex-1 p-2 bg-white overflow-y-auto">
-                  <div className="space-y-1">
+                  <div className="msn-chat-area">
                     {getCurrentMessages().map((message) => (
                       <div
                         key={message.id}
-                        className={`p-2 rounded text-xs ${
+                        className={`msn-message ${
                           message.user_id === currentUser?.id
-                            ? 'xp-message-own ml-4'
-                            : 'xp-message-other mr-4'
+                            ? 'msn-message-own'
+                            : 'msn-message-other'
                         }`}
                       >
-                        <div className="font-bold text-xp-blue mb-1">
+                        <span className="msn-username">
                           {message.username}
-                        </div>
-                        <div className="text-black">{message.content}</div>
-                        <div className="text-xs text-gray-500 mt-1">
+                        </span>
+                        <div className="msn-message-content">{message.content}</div>
+                        <div className="msn-timestamp">
                           {new Date(message.created_at).toLocaleTimeString()}
                         </div>
                       </div>

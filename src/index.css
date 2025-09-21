@@ -202,6 +202,60 @@ body {
   border-radius: 4px;
 }
 
+/* MSN Messenger Style Messages */
+.msn-message {
+  background: #FFFFFF;
+  border: 1px solid #C0C0C0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 4px 0;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+  font-family: 'Tahoma', sans-serif;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.msn-message-own {
+  background: linear-gradient(180deg, #E8F4FD 0%, #D1E7F8 100%);
+  border: 1px solid #7BB3E0;
+  margin-left: 60px;
+  margin-right: 8px;
+}
+
+.msn-message-other {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F8F8F8 100%);
+  border: 1px solid #C0C0C0;
+  margin-left: 8px;
+  margin-right: 60px;
+}
+
+.msn-username {
+  font-weight: bold;
+  color: #0066CC;
+  font-size: 11px;
+  margin-bottom: 2px;
+  display: block;
+}
+
+.msn-message-content {
+  color: #000000;
+  font-size: 11px;
+  word-wrap: break-word;
+}
+
+.msn-timestamp {
+  color: #666666;
+  font-size: 9px;
+  margin-top: 2px;
+  text-align: right;
+}
+
+.msn-chat-area {
+  background: #FFFFFF;
+  padding: 8px;
+  font-family: 'Tahoma', sans-serif;
+}
+
 /* User Status Colors */
 .xp-user-online {
   color: #008000;
