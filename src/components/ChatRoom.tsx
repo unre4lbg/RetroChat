@@ -221,17 +221,20 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
   const startPrivateChat = (user: UserProfile) => {
     if (user.user_id === currentUser?.id) return;
     
-    setSelectedUser(user);
     const chatKey = getChatKey(currentUser.id, user.user_id);
     
-    // Always ensure we have the chat in privateChats
+    // Always add to private chats list first
     setPrivateChats(prev => ({
       ...prev,
       [chatKey]: prev[chatKey] || []
     }));
     
-    // Fetch messages if we don't have them yet
-    fetchPrivateMessages(user.user_id);
+    setSelectedUser(user);
+    
+    // Fetch messages
+    if (!privateChats[chatKey] || privateChats[chatKey].length === 0) {
+      fetchPrivateMessages(user.user_id);
+    }
     
     // Clear unread count
     setUnreadCounts(prev => ({
@@ -265,7 +268,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
         [chatKey]: data || []
       }));
     } catch (error) {
-      // Silent error handling
+      console.error('Error fetching private messages:', error);
     }
   };
 
@@ -305,8 +308,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
     return Object.keys(privateChats).map(chatKey => {
       const [userId1, userId2] = chatKey.split('-');
       const otherUserId = userId1 === currentUser.id ? userId2 : userId1;
-      return allUsers.find(user => user.user_id === otherUserId);
-    }).filter(Boolean) as UserProfile[];
+      const user = allUsers.find(user => user.user_id === otherUserId);
+      return user;
+    }).filter((user): user is UserProfile => user !== undefined);
   };
 
   const getOnlineUsers = () => {
