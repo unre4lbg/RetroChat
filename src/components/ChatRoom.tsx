@@ -12,7 +12,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
   const [newMessage, setNewMessage] = useState('');
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [onlineUsers, setOnlineUsers] = useState<UserProfile[]>([]);
+  const [allUsers, setAllUsers] = useState<UserProfile[]>([]);
+  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [privateChats, setPrivateChats] = useState<{[key: string]: Message[]}>({});
@@ -24,7 +25,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
   useEffect(() => {
     initializeUser();
     fetchMessages();
-    fetchOnlineUsers();
+    fetchAllUsers();
+    trackOnlineUsers();
     
     const messageSubscription = supabase
       .channel('messages')
@@ -55,6 +57,14 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
     return () => {
       messageSubscription.unsubscribe();
     };
+  }, [currentUser]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      updateUserPresence();
+    }, 30000); // Update presence every 30 seconds
+
+    return () => clearInterval(interval);
   }, [currentUser]);
 
   useEffect(() => {
@@ -99,7 +109,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
     }
   };
 
-  const fetchOnlineUsers = async () => {
+  const fetchAllUsers = async () => {
     try {
       const { data, error } = await supabase
         .from('user_profiles')
@@ -107,10 +117,54 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
         .order('username', { ascending: true });
       
       if (error) throw error;
-      if (data) setOnlineUsers(data);
+      if (data) setAllUsers(data);
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error('Error fetching all users:', error);
     }
+  };
+
+  const trackOnlineUsers = async () => {
+    if (!currentUser) return;
+
+    // Subscribe to presence changes
+    const channel = supabase.channel('online-users', {
+      config: {
+        presence: {
+          key: currentUser.id,
+        },
+      },
+    });
+
+    channel
+      .on('presence', { event: 'sync' }, () => {
+        const state = channel.presenceState();
+        const onlineUserIds = Object.keys(state);
+        setOnlineUsers(onlineUserIds);
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          await channel.track({
+            user_id: currentUser.id,
+            username: userProfile?.username,
+            online_at: new Date().toISOString(),
+          });
+        }
+      });
+
+    return () => {
+      channel.unsubscribe();
+    };
+  };
+
+  const updateUserPresence = async () => {
+    if (!currentUser) return;
+    
+    const channel = supabase.channel('online-users');
+    await channel.track({
+      user_id: currentUser.id,
+      username: userProfile?.username,
+      online_at: new Date().toISOString(),
+    });
   };
 
   const sendMessage = async (e: React.FormEvent) => {
@@ -206,11 +260,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const filteredUsers = onlineUsers.filter(user =>
-    user.username.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    user.user_id !== currentUser?.id
-  );
-
   const getCurrentMessages = () => {
     if (selectedUser) {
       const chatKey = getChatKey(currentUser.id, selectedUser.user_id);
@@ -223,9 +272,21 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
     return Object.keys(privateChats).map(chatKey => {
       const [userId1, userId2] = chatKey.split('-');
       const otherUserId = userId1 === currentUser.id ? userId2 : userId1;
-      return onlineUsers.find(user => user.user_id === otherUserId);
+      return allUsers.find(user => user.user_id === otherUserId);
     }).filter(Boolean) as UserProfile[];
   };
+
+  const getOnlineUsers = () => {
+    return allUsers.filter(user => 
+      onlineUsers.includes(user.user_id) && 
+      user.user_id !== currentUser?.id
+    );
+  };
+
+  const filteredUsers = getOnlineUsers().filter(user =>
+    user.username.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    user.user_id !== currentUser?.id
+  );
 
   if (loading) {
     return (
@@ -241,48 +302,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
     <div className="min-h-screen bg-xp-desktop font-xp">
       {/* Desktop Layout */}
       <div className="hidden md:flex h-screen">
-        {/* Left Sidebar - Users */}
-        <div className="w-64 xp-window m-2 flex flex-col">
-          <div className="xp-titlebar">
-            <div className="flex items-center">
-              <Users className="h-4 w-4 mr-2" />
-              <span>Online Users ({filteredUsers.length})</span>
-            </div>
-            <div className="flex">
-              <button className="w-5 h-4 xp-button text-xs mr-1"><Minimize2 className="h-2 w-2" /></button>
-              <button className="w-5 h-4 xp-button text-xs"><X className="h-2 w-2" /></button>
-            </div>
-          </div>
-          
-          <div className="flex-1 p-2 bg-xp-panel">
-            <div className="mb-2">
-              <div className="flex items-center xp-input-container">
-                <Search className="h-3 w-3 text-gray-500 mr-1" />
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search users..."
-                  className="flex-1 xp-input text-xs"
-                />
-              </div>
-            </div>
-            
-            <div className="xp-listbox flex-1 overflow-y-auto max-h-80">
-              {filteredUsers.map((user) => (
-                <div
-                  key={user.id}
-                  onDoubleClick={() => startPrivateChat(user)}
-                  className="xp-listitem p-2 cursor-pointer text-xs flex items-center"
-                >
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                  <span className="text-black">{user.username}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
         {/* Main Chat Area */}
         <div className="flex-1 xp-window m-2 flex flex-col">
           <div className="xp-titlebar">
@@ -293,9 +312,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
               </span>
             </div>
             <div className="flex">
-              <button className="w-5 h-4 xp-button text-xs mr-1"><Minimize2 className="h-2 w-2" /></button>
-              <button className="w-5 h-4 xp-button text-xs mr-1"><Maximize2 className="h-2 w-2" /></button>
-              <button onClick={handleLogout} className="w-5 h-4 xp-button text-xs"><X className="h-2 w-2" /></button>
+              <button className="xp-titlebar-button xp-minimize-btn">_</button>
+              <button className="xp-titlebar-button xp-maximize-btn">□</button>
+              <button onClick={handleLogout} className="xp-titlebar-button xp-close-btn">×</button>
             </div>
           </div>
 
@@ -355,54 +374,88 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
           </div>
         </div>
 
-        {/* Right Sidebar - Private Chats */}
+        {/* Right Sidebar - Users and Private Chats */}
         <div className="w-64 xp-window m-2 flex flex-col">
           <div className="xp-titlebar">
             <div className="flex items-center">
-              <MessageSquare className="h-4 w-4 mr-2" />
-              <span>Private Chats</span>
+              <Users className="h-4 w-4 mr-2" />
+              <span>Users & Chats</span>
             </div>
             <div className="flex">
-              <button className="w-5 h-4 xp-button text-xs mr-1"><Minimize2 className="h-2 w-2" /></button>
-              <button className="w-5 h-4 xp-button text-xs"><X className="h-2 w-2" /></button>
+              <button className="xp-titlebar-button xp-minimize-btn">_</button>
+              <button className="xp-titlebar-button xp-close-btn">×</button>
             </div>
           </div>
-          
-          <div className="flex-1 p-2 bg-xp-panel">
-            <div className="xp-listbox flex-1 overflow-y-auto max-h-80">
-              {getActiveChatUsers().map((user) => {
-                const chatKey = getChatKey(currentUser.id, user.user_id);
-                const unreadCount = unreadCounts[chatKey] || 0;
-                
-                return (
+
+          <div className="flex-1 p-2 bg-xp-panel flex flex-col">
+            {/* Online Users Section */}
+            <div className="mb-3">
+              <h3 className="text-xs font-bold text-black mb-2">Online Users ({filteredUsers.length})</h3>
+              <div className="mb-2">
+                <div className="flex items-center xp-input-container">
+                  <Search className="h-3 w-3 text-gray-500 mr-1" />
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Search users..."
+                    className="flex-1 xp-input text-xs"
+                  />
+                </div>
+              </div>
+              
+              <div className="xp-listbox overflow-y-auto max-h-40">
+                {filteredUsers.map((user) => (
                   <div
                     key={user.id}
-                    onClick={() => startPrivateChat(user)}
-                    className="xp-listitem p-2 cursor-pointer text-xs flex items-center justify-between"
+                    onDoubleClick={() => startPrivateChat(user)}
+                    className="xp-listitem p-2 cursor-pointer text-xs flex items-center"
                   >
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                      <span className="text-black">{user.username}</span>
-                    </div>
-                    <div className="flex items-center">
-                      {unreadCount > 0 && (
-                        <span className="bg-red-500 text-white rounded-full px-1 text-xs mr-1">
-                          {unreadCount}
-                        </span>
-                      )}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          removePrivateChat(user);
-                        }}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </div>
+                    <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                    <span className="text-black">{user.username}</span>
                   </div>
-                );
-              })}
+                ))}
+              </div>
+            </div>
+
+            {/* Private Chats Section */}
+            <div className="flex-1">
+              <h3 className="text-xs font-bold text-black mb-2">Private Chats ({getActiveChatUsers().length})</h3>
+              <div className="xp-listbox flex-1 overflow-y-auto">
+                {getActiveChatUsers().map((user) => {
+                  const chatKey = getChatKey(currentUser.id, user.user_id);
+                  const unreadCount = unreadCounts[chatKey] || 0;
+                  
+                  return (
+                    <div
+                      key={user.id}
+                      onClick={() => startPrivateChat(user)}
+                      className="xp-listitem p-2 cursor-pointer text-xs flex items-center justify-between"
+                    >
+                      <div className="flex items-center">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                        <span className="text-black">{user.username}</span>
+                      </div>
+                      <div className="flex items-center">
+                        {unreadCount > 0 && (
+                          <span className="bg-red-500 text-white rounded-full px-1 text-xs mr-1">
+                            {unreadCount}
+                          </span>
+                        )}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removePrivateChat(user);
+                          }}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
@@ -437,7 +490,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
                 activeMobilePanel === 'users' ? 'xp-tab-active' : 'xp-tab'
               }`}
             >
-              Users ({filteredUsers.length})
+              Users ({getOnlineUsers().length})
             </button>
             <button
               onClick={() => setActiveMobilePanel('private')}

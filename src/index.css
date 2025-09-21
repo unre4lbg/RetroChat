@@ -79,6 +79,53 @@ body {
   justify-content: space-between;
 }
 
+/* XP Title Bar Buttons */
+.xp-titlebar-button {
+  width: 21px;
+  height: 21px;
+  background: linear-gradient(135deg, #ffffff 0%, #e6e6e6 50%, #cccccc 100%);
+  border: 1px solid #999999;
+  border-radius: 2px;
+  color: #000000;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-left: 2px;
+  font-family: 'Marlett', 'Webdings', monospace;
+}
+
+.xp-titlebar-button:hover {
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 50%, #d6d6d6 100%);
+  border-color: #0066cc;
+}
+
+.xp-titlebar-button:active {
+  background: linear-gradient(135deg, #cccccc 0%, #e6e6e6 50%, #ffffff 100%);
+  border-color: #0066cc;
+}
+
+.xp-minimize-btn {
+  font-size: 10px;
+  padding-bottom: 8px;
+}
+
+.xp-maximize-btn {
+  font-size: 10px;
+}
+
+.xp-close-btn {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 50%, #f44336 100%);
+  border-color: #d32f2f;
+  color: white;
+}
+
+.xp-close-btn:hover {
+  background: linear-gradient(135deg, #ff7979 0%, #ff6b6b 50%, #ff5252 100%);
+}
+
 .xp-titlebar-inactive {
   background: linear-gradient(180deg, #BFBFBF 0%, #8A8A8A 100%);
   color: #FFFFFF;
