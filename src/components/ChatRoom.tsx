@@ -484,9 +484,16 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
               <MessageSquare className="h-4 w-4 mr-2" />
               <span>Retro Chat</span>
             </div>
-            <button onClick={handleLogout} className="w-5 h-4 xp-button text-xs">
-              ×
-            </button>
+            <div className="flex">
+              <button className="xp-titlebar-button xp-minimize-btn">−</button>
+              <button className="xp-titlebar-button xp-maximize-btn">□</button>
+              <button
+                onClick={handleLogout}
+                className="xp-titlebar-button xp-close-btn"
+              >
+                ×
+              </button>
+            </div>
           </div>
 
           {/* Mobile Tabs */}
