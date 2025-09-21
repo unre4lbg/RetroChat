@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { Terminal, Zap, Users } from 'lucide-react';
+import { Terminal, Zap, Users, Minimize2, Maximize2 } from 'lucide-react';
 
 interface LandingPageProps {
   onLogin: () => void;
