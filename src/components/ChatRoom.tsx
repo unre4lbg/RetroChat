@@ -244,7 +244,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
   };
 
   const startPrivateChat = (user: UserProfile) => {
-    if (user.user_id === currentUser?.id) return;
+    if (!user.user_id || user.user_id === currentUser?.id) return;
     
     const chatKey = getChatKey(currentUser.id, user.user_id);
     
@@ -274,8 +274,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
     return [userId1, userId2].sort().join('-');
   };
 
-  const fetchPrivateMessages = async (otherUserId: string) => {
-    if (!currentUser) return;
+  const fetchPrivateMessages = async (otherUserId: string | null) => {
+    if (!currentUser || !otherUserId) return;
     
     try {
       const { data, error } = await supabase
@@ -335,7 +335,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
     Object.keys(privateChats).forEach((chatKey) => {
       const [userId1, userId2] = chatKey.split('-');
       const otherUserId = userId1 === currentUser.id ? userId2 : userId1;
-      const user = allUsers.find((u) => u.user_id === otherUserId);
+      const user = allUsers.find((u) => u.user_id === otherUserId && u.user_id !== null);
       if (user) {
         activeChatUsers.push(user);
       }
@@ -655,7 +655,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
                   {filteredUsers.map((user) => (
                     <div
                       key={user.id}
-                      onDoubleClick={() => startPrivateChat(user)}
+                      onDoubleClick={() => user.user_id && startPrivateChat(user)}
                       className="xp-listitem p-2 cursor-pointer text-xs flex items-center"
                     >
                       <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>

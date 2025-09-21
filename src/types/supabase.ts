@@ -16,7 +16,7 @@ export interface Message {
 
 export interface UserProfile {
   id: string;
-  user_id: string;
+  user_id: string | null;
   username: string;
   created_at: string;
 }
