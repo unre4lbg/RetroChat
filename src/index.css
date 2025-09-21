@@ -1,0 +1,133 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Windows 98 Classic Theme */
+body {
+  font-family: 'Tahoma', 'MS Sans Serif', 'Arial', sans-serif;
+  background: #008080;
+  color: #000000;
+  font-size: 11px;
+}
+
+/* Windows 98 3D Border Effects */
+.win98-inset {
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-bottom: 1px solid #DFDFDF;
+  border-right: 1px solid #DFDFDF;
+}
+
+.win98-outset {
+  border-top: 1px solid #DFDFDF;
+  border-left: 1px solid #DFDFDF;
+  border-bottom: 1px solid #808080;
+  border-right: 1px solid #808080;
+}
+
+.win98-button {
+  border-top: 2px solid #DFDFDF;
+  border-left: 2px solid #DFDFDF;
+  border-bottom: 2px solid #808080;
+  border-right: 2px solid #808080;
+  background: #C0C0C0;
+}
+
+.win98-button:hover {
+  background: #D4D0C8;
+}
+
+.win98-button:active {
+  border-top: 2px solid #808080;
+  border-left: 2px solid #808080;
+  border-bottom: 2px solid #DFDFDF;
+  border-right: 2px solid #DFDFDF;
+}
+
+.win98-input {
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-bottom: 1px solid #DFDFDF;
+  border-right: 1px solid #DFDFDF;
+  background: #FFFFFF;
+  padding: 2px 4px;
+}
+
+.win98-panel {
+  background: #C0C0C0;
+  border-top: 2px solid #DFDFDF;
+  border-left: 2px solid #DFDFDF;
+  border-bottom: 2px solid #808080;
+  border-right: 2px solid #808080;
+}
+
+.win98-window {
+  background: #C0C0C0;
+  border: 2px outset #C0C0C0;
+}
+
+.win98-titlebar {
+  background: linear-gradient(90deg, #0A246A 0%, #A6CAF0 100%);
+  color: white;
+  font-weight: bold;
+  padding: 2px 4px;
+  font-size: 11px;
+}
+
+.win98-titlebar-inactive {
+  background: linear-gradient(90deg, #808080 0%, #C0C0C0 100%);
+  color: #C0C0C0;
+}
+
+/* ICQ-style elements */
+.icq-message-own {
+  background: #E6F3FF;
+  border: 1px solid #B8D4F0;
+}
+
+.icq-message-other {
+  background: #F0F8E6;
+  border: 1px solid #D4E6B8;
+}
+
+.icq-user-online {
+  color: #008000;
+}
+
+.icq-user-away {
+  color: #FF8000;
+}
+
+.icq-user-offline {
+  color: #808080;
+}
+
+/* Custom scrollbar for Windows 98 look */
+::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+::-webkit-scrollbar-track {
+  background: #C0C0C0;
+  border: 1px inset #C0C0C0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #C0C0C0;
+  border: 1px outset #C0C0C0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #D4D0C8;
+}
+
+::-webkit-scrollbar-corner {
+  background: #C0C0C0;
+}
+
+/* Remove any modern animations */
+* {
+  transition: none !important;
+  animation: none !important;
+}
