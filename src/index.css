@@ -2,132 +2,280 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Windows 98 Classic Theme */
+/* Windows XP Luna Theme */
 body {
-  font-family: 'Tahoma', 'MS Sans Serif', 'Arial', sans-serif;
-  background: #008080;
+  font-family: 'Tahoma', 'Segoe UI', 'Arial', sans-serif;
+  background: linear-gradient(135deg, #245EDC 0%, #4B8EF1 50%, #245EDC 100%);
   color: #000000;
   font-size: 11px;
+  min-height: 100vh;
 }
 
-/* Windows 98 3D Border Effects */
-.win98-inset {
-  border-top: 1px solid #808080;
-  border-left: 1px solid #808080;
-  border-bottom: 1px solid #DFDFDF;
-  border-right: 1px solid #DFDFDF;
+/* Windows XP Button Styles */
+.xp-button {
+  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 50%, #D6D3CE 100%);
+  border: 1px solid #ACA899;
+  border-radius: 3px;
+  color: #000000;
+  font-weight: normal;
+  padding: 3px 8px;
+  cursor: pointer;
+  transition: all 0.1s ease;
 }
 
-.win98-outset {
-  border-top: 1px solid #DFDFDF;
-  border-left: 1px solid #DFDFDF;
-  border-bottom: 1px solid #808080;
-  border-right: 1px solid #808080;
+.xp-button:hover {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F0EDE5 50%, #DDD9CE 100%);
+  border-color: #316AC5;
 }
 
-.win98-button {
-  border-top: 2px solid #DFDFDF;
-  border-left: 2px solid #DFDFDF;
-  border-bottom: 2px solid #808080;
-  border-right: 2px solid #808080;
-  background: #C0C0C0;
+.xp-button:active {
+  background: linear-gradient(180deg, #D6D3CE 0%, #ECE9D8 50%, #FFFFFF 100%);
+  border-color: #316AC5;
 }
 
-.win98-button:hover {
-  background: #D4D0C8;
-}
-
-.win98-button:active {
-  border-top: 2px solid #808080;
-  border-left: 2px solid #808080;
-  border-bottom: 2px solid #DFDFDF;
-  border-right: 2px solid #DFDFDF;
-}
-
-.win98-input {
-  border-top: 1px solid #808080;
-  border-left: 1px solid #808080;
-  border-bottom: 1px solid #DFDFDF;
-  border-right: 1px solid #DFDFDF;
-  background: #FFFFFF;
-  padding: 2px 4px;
-}
-
-.win98-panel {
-  background: #C0C0C0;
-  border-top: 2px solid #DFDFDF;
-  border-left: 2px solid #DFDFDF;
-  border-bottom: 2px solid #808080;
-  border-right: 2px solid #808080;
-}
-
-.win98-window {
-  background: #C0C0C0;
-  border: 2px outset #C0C0C0;
-}
-
-.win98-titlebar {
-  background: linear-gradient(90deg, #0A246A 0%, #A6CAF0 100%);
+.xp-button-blue {
+  background: linear-gradient(180deg, #4B8EF1 0%, #2E5BBA 50%, #1E3F7A 100%);
+  border: 1px solid #1E3F7A;
   color: white;
   font-weight: bold;
+}
+
+.xp-button-blue:hover {
+  background: linear-gradient(180deg, #5A9DF2 0%, #3E6BCB 50%, #2E4F8B 100%);
+}
+
+/* Windows XP Input Fields */
+.xp-input {
+  background: #FFFFFF;
+  border: 2px inset #ECE9D8;
+  border-radius: 1px;
   padding: 2px 4px;
+  font-family: 'Tahoma', sans-serif;
   font-size: 11px;
 }
 
-.win98-titlebar-inactive {
-  background: linear-gradient(90deg, #808080 0%, #C0C0C0 100%);
-  color: #C0C0C0;
+.xp-input:focus {
+  border: 2px inset #316AC5;
+  outline: none;
 }
 
-/* ICQ-style elements */
-.icq-message-own {
-  background: #E6F3FF;
-  border: 1px solid #B8D4F0;
+/* Windows XP Window Styles */
+.xp-window {
+  background: #ECE9D8;
+  border: 1px solid #ACA899;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-.icq-message-other {
-  background: #F0F8E6;
-  border: 1px solid #D4E6B8;
+.xp-titlebar {
+  background: linear-gradient(180deg, #4B8EF1 0%, #2E5BBA 100%);
+  color: white;
+  font-weight: bold;
+  padding: 4px 8px;
+  font-size: 11px;
+  border-radius: 6px 6px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.icq-user-online {
+.xp-titlebar-inactive {
+  background: linear-gradient(180deg, #BFBFBF 0%, #8A8A8A 100%);
+  color: #FFFFFF;
+}
+
+/* Windows XP Panel Styles */
+.xp-panel {
+  background: #ECE9D8;
+  border: 1px outset #ECE9D8;
+  border-radius: 0;
+}
+
+.xp-panel-inset {
+  background: #FFFFFF;
+  border: 2px inset #ECE9D8;
+  border-radius: 1px;
+}
+
+.xp-panel-outset {
+  background: #ECE9D8;
+  border: 1px outset #ECE9D8;
+  border-radius: 1px;
+}
+
+/* Windows XP Taskbar Style */
+.xp-taskbar {
+  background: linear-gradient(180deg, #4B8EF1 0%, #2E5BBA 100%);
+  border-top: 1px solid #6BA3F5;
+  height: 30px;
+}
+
+/* Windows XP Start Button */
+.xp-start-button {
+  background: linear-gradient(180deg, #73B574 0%, #4E8B4F 100%);
+  border: 1px outset #73B574;
+  border-radius: 6px 6px 0 0;
+  color: white;
+  font-weight: bold;
+  padding: 4px 12px;
+  margin: 2px;
+}
+
+.xp-start-button:hover {
+  background: linear-gradient(180deg, #83C584 0%, #5E9B5F 100%);
+}
+
+/* Message Styles */
+.xp-message-own {
+  background: linear-gradient(180deg, #E6F3FF 0%, #CCE7FF 100%);
+  border: 1px solid #99CCFF;
+  border-radius: 4px;
+}
+
+.xp-message-other {
+  background: linear-gradient(180deg, #F0F8E6 0%, #E0F0D0 100%);
+  border: 1px solid #B8D4A0;
+  border-radius: 4px;
+}
+
+.xp-message-system {
+  background: linear-gradient(180deg, #FFF8E6 0%, #FFF0CC 100%);
+  border: 1px solid #FFD700;
+  border-radius: 4px;
+}
+
+/* User Status Colors */
+.xp-user-online {
   color: #008000;
+  font-weight: bold;
 }
 
-.icq-user-away {
+.xp-user-away {
   color: #FF8000;
 }
 
-.icq-user-offline {
+.xp-user-offline {
   color: #808080;
 }
 
-/* Custom scrollbar for Windows 98 look */
+/* Windows XP Scrollbar */
 ::-webkit-scrollbar {
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #C0C0C0;
-  border: 1px inset #C0C0C0;
+  background: #ECE9D8;
+  border: 1px inset #ECE9D8;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #C0C0C0;
-  border: 1px outset #C0C0C0;
+  background: linear-gradient(180deg, #FFFFFF 0%, #ECE9D8 50%, #D6D3CE 100%);
+  border: 1px outset #ECE9D8;
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #D4D0C8;
+  background: linear-gradient(180deg, #F0EDE5 0%, #DDD9CE 50%, #C8C5C0 100%);
 }
 
 ::-webkit-scrollbar-corner {
-  background: #C0C0C0;
+  background: #ECE9D8;
 }
 
-/* Remove any modern animations */
+/* Windows XP Tab Styles */
+.xp-tab {
+  background: linear-gradient(180deg, #ECE9D8 0%, #D6D3CE 100%);
+  border: 1px solid #ACA899;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  padding: 4px 12px;
+  margin-right: 2px;
+  cursor: pointer;
+}
+
+.xp-tab-active {
+  background: #ECE9D8;
+  border-bottom: 1px solid #ECE9D8;
+  position: relative;
+  z-index: 1;
+}
+
+.xp-tab:hover {
+  background: linear-gradient(180deg, #F0EDE5 0%, #DDD9CE 100%);
+}
+
+/* Windows XP Menu Styles */
+.xp-menu {
+  background: #ECE9D8;
+  border: 1px outset #ECE9D8;
+  border-radius: 4px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.xp-menu-item {
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.xp-menu-item:hover {
+  background: linear-gradient(90deg, #316AC5 0%, #4B8EF1 100%);
+  color: white;
+}
+
+/* Windows XP Status Bar */
+.xp-status-bar {
+  background: #ECE9D8;
+  border-top: 1px solid #ACA899;
+  padding: 2px 8px;
+  font-size: 10px;
+  color: #000000;
+}
+
+/* Remove transitions for authentic XP feel */
 * {
   transition: none !important;
-  animation: none !important;
+}
+
+/* XP specific animations */
+.xp-fade-in {
+  animation: xpFadeIn 0.2s ease-out;
+}
+
+@keyframes xpFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* XP Login Screen */
+.xp-login-bg {
+  background: linear-gradient(135deg, #245EDC 0%, #4B8EF1 25%, #6BA3F5 50%, #4B8EF1 75%, #245EDC 100%);
+  background-size: 400% 400%;
+  animation: xpGradient 8s ease infinite;
+}
+
+@keyframes xpGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* XP Welcome Screen Elements */
+.xp-welcome-panel {
+  background: rgba(236, 233, 216, 0.95);
+  border: 1px solid #ACA899;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(2px);
+}
+
+/* XP Icons */
+.xp-icon {
+  filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.3));
 }

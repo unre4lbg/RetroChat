@@ -53,20 +53,20 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onAdminLogin }) => {
   };
 
   return (
-    <div className="min-h-screen bg-win98-desktop flex items-center justify-center p-4 font-win98">
+    <div className="min-h-screen xp-login-bg flex items-center justify-center p-4 font-xp">
       <div className="w-full max-w-md">
         {/* Main Window */}
-        <div className="win98-window">
+        <div className="xp-welcome-panel xp-fade-in">
           {/* Title Bar */}
-          <div className="win98-titlebar flex items-center justify-between px-2 py-1">
+          <div className="xp-titlebar">
             <div className="flex items-center">
-              <Terminal className="h-4 w-4 mr-1" />
+              <Terminal className="h-4 w-4 mr-2 xp-icon" />
               <span>Retro Chat - Влизане</span>
             </div>
             <div className="flex">
-              <button className="w-4 h-4 bg-win98-gray win98-button text-xs">_</button>
-              <button className="w-4 h-4 bg-win98-gray win98-button text-xs ml-1">□</button>
-              <button className="w-4 h-4 bg-win98-gray win98-button text-xs ml-1">×</button>
+              <button className="w-5 h-4 xp-button text-xs mr-1">_</button>
+              <button className="w-5 h-4 xp-button text-xs mr-1">□</button>
+              <button className="w-5 h-4 xp-button text-xs">×</button>
             </div>
           </div>
 
@@ -75,10 +75,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onAdminLogin }) => {
             {/* Header */}
             <div className="text-center mb-4">
               <div className="flex items-center justify-center mb-2">
-                <Terminal className="h-8 w-8 text-win98-blue mr-1" />
-                <Zap className="h-6 w-6 text-icq-orange" />
+                <Terminal className="h-8 w-8 text-xp-blue mr-2 xp-icon" />
+                <Zap className="h-6 w-6 text-xp-orange xp-icon" />
               </div>
-              <h1 className="text-lg font-bold text-win98-blue mb-1">
+              <h1 className="text-lg font-bold text-xp-blue mb-1">
                 Retro Chat v1.0 (Beta)
               </h1>
               <p className="text-xs text-black">
@@ -90,20 +90,20 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onAdminLogin }) => {
             <div className="flex mb-4">
               <button
                 onClick={() => setIsLogin(true)}
-                className={`flex-1 py-1 px-2 text-xs font-bold mr-1 ${
+                className={`flex-1 py-2 px-3 text-xs font-bold mr-1 ${
                   isLogin
-                    ? 'win98-inset bg-win98-light-gray'
-                    : 'win98-button'
+                    ? 'xp-tab-active xp-tab'
+                    : 'xp-tab'
                 }`}
               >
                 Вход
               </button>
               <button
                 onClick={() => setIsLogin(false)}
-                className={`flex-1 py-1 px-2 text-xs font-bold ml-1 ${
+                className={`flex-1 py-2 px-3 text-xs font-bold ml-1 ${
                   !isLogin
-                    ? 'win98-inset bg-win98-light-gray'
-                    : 'win98-button'
+                    ? 'xp-tab-active xp-tab'
+                    : 'xp-tab'
                 }`}
               >
                 Регистрация
@@ -121,7 +121,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onAdminLogin }) => {
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="w-full win98-input text-xs"
+                    className="w-full xp-input text-xs"
                     placeholder="Въведи потребителско име"
                     required={!isLogin}
                   />
@@ -136,7 +136,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onAdminLogin }) => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full win98-input text-xs"
+                  className="w-full xp-input text-xs"
                   placeholder="Въведи имейл адрес"
                   required
                 />
@@ -150,14 +150,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onAdminLogin }) => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full win98-input text-xs"
+                  className="w-full xp-input text-xs"
                   placeholder="Парола - минимум 8 символа"
                   required
                 />
               </div>
 
               {error && (
-                <div className="win98-inset bg-white p-2 text-xs text-red-600">
+                <div className="xp-panel-inset p-2 text-xs text-red-600">
                   Error: {error}
                 </div>
               )}
@@ -165,16 +165,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onAdminLogin }) => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full win98-button py-2 px-4 text-xs font-bold text-black disabled:opacity-50"
+                className="w-full xp-button-blue py-2 px-4 text-xs font-bold disabled:opacity-50"
               >
                 {loading ? 'Влизане, моля изчаайте...' : isLogin ? 'Вход' : 'Регистрация'}
               </button>
             </form>
 
-            <div className="mt-3 pt-3 border-t border-win98-dark-gray">
+            <div className="mt-3 pt-3 border-t border-xp-border">
               <button
                 onClick={onAdminLogin}
-                className="w-full win98-button py-2 px-4 text-xs font-bold text-black"
+                className="w-full xp-button py-2 px-4 text-xs font-bold text-black"
               >
                 Админ Панел
               </button>
