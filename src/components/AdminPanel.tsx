@@ -254,24 +254,24 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen xp-login-bg flex items-center justify-center p-4 font-xp">
+      <div className="min-h-screen bg-win98-desktop flex items-center justify-center p-4 font-win98">
         <div className="w-full max-w-md">
-          <div className="xp-welcome-panel xp-fade-in">
+          <div className="win98-window">
             {/* Title Bar */}
-            <div className="xp-titlebar">
+            <div className="win98-titlebar flex items-center justify-between px-2 py-1">
               <div className="flex items-center">
-                <Shield className="h-4 w-4 mr-2 xp-icon" />
+                <Shield className="h-4 w-4 mr-1" />
                 <span>Administrator Access</span>
               </div>
               <div className="flex">
-                <button className="w-5 h-4 xp-button text-xs mr-1">
+                <button className="w-4 h-4 bg-win98-gray win98-button text-xs mr-1">
                   <Minimize2 className="h-2 w-2" />
                 </button>
                 <button 
                   onClick={onBack}
-                  className="xp-titlebar-button xp-close-btn"
+                  className="w-4 h-4 bg-win98-gray win98-button text-xs"
                 >
-                  ×
+                  <X className="h-2 w-2" />
                 </button>
               </div>
             </div>
@@ -279,7 +279,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
             {/* Content */}
             <div className="p-4">
               <div className="text-center mb-4">
-                <Shield className="h-12 w-12 text-red-600 mx-auto mb-2 xp-icon" />
+                <Shield className="h-12 w-12 text-red-600 mx-auto mb-2" />
                 <h1 className="text-lg font-bold text-red-600 mb-1">
                   RESTRICTED AREA
                 </h1>
@@ -297,7 +297,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="w-full xp-input text-xs"
+                    className="w-full win98-input text-xs"
                     placeholder="Admin username"
                     required
                   />
@@ -311,14 +311,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full xp-input text-xs"
+                    className="w-full win98-input text-xs"
                     placeholder="Password"
                     required
                   />
                 </div>
 
                 {error && (
-                  <div className="xp-panel-inset p-2 text-xs text-red-600">
+                  <div className="win98-inset bg-white p-2 text-xs text-red-600">
                     Error: {error}
                   </div>
                 )}
@@ -326,7 +326,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full xp-button-blue py-2 px-4 text-xs font-bold disabled:opacity-50"
+                  className="w-full win98-button py-2 px-4 text-xs font-bold text-black disabled:opacity-50"
                 >
                   {loading ? 'Authenticating...' : 'Access Admin Panel'}
                 </button>
@@ -334,7 +334,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
 
               <button
                 onClick={onBack}
-                className="w-full mt-3 xp-button py-2 px-4 text-xs font-bold text-black flex items-center justify-center"
+                className="w-full mt-3 win98-button py-2 px-4 text-xs font-bold text-black flex items-center justify-center"
               >
                 <ArrowLeft className="h-3 w-3 mr-1" />
                 Back to Login
@@ -347,68 +347,69 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
   }
 
   return (
-    <div className="min-h-screen xp-login-bg font-xp p-2">
-      <div className="xp-window h-full">
+    <div className="min-h-screen bg-win98-desktop font-win98 p-2">
+      <div className="win98-window h-full">
         {/* Title Bar */}
-        <div className="xp-titlebar">
+        <div className="win98-titlebar flex items-center justify-between px-2 py-1">
           <div className="flex items-center">
-            <Shield className="h-4 w-4 mr-2 xp-icon" />
+            <Shield className="h-4 w-4 mr-1" />
             <span>Administrator Control Panel</span>
           </div>
           <div className="flex">
-            <button className="xp-titlebar-button xp-minimize-btn">−</button>
-            <button className="xp-titlebar-button xp-maximize-btn">□</button>
-            <button
+            <button className="w-4 h-4 bg-win98-gray win98-button text-xs mr-1">
+              <Minimize2 className="h-2 w-2" />
+            </button>
+            <button 
               onClick={onBack}
-              className="xp-titlebar-button xp-close-btn"
+              className="w-4 h-4 bg-win98-gray win98-button text-xs"
             >
-              ×
+              <X className="h-2 w-2" />
             </button>
           </div>
         </div>
 
         <div className="p-4 space-y-4 overflow-y-auto">
           {/* Chat Management */}
-          <div className="xp-panel p-3">
+          <div className="win98-panel p-3">
             <h2 className="text-sm font-bold text-black mb-3 flex items-center">
-              <MessageSquare className="h-4 w-4 mr-2 xp-icon" />
+              <MessageSquare className="h-4 w-4 mr-1" />
               Chat Management
             </h2>
             <button
               onClick={clearChatHistory}
               disabled={loading}
-              className="xp-button py-2 px-3 text-xs font-bold text-black disabled:opacity-50"
+              className="win98-button py-1 px-3 text-xs font-bold text-black disabled:opacity-50"
             >
               Clear Chat History
             </button>
           </div>
 
           {/* User Management */}
-          <div className="xp-panel p-3">
+          <div className="win98-panel p-3">
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-sm font-bold text-black flex items-center">
-                <Users className="h-4 w-4 mr-2 xp-icon" />
+                <Users className="h-4 w-4 mr-1" />
                 User Management ({users.length})
               </h2>
               <button
                 onClick={() => setShowCreateForm(!showCreateForm)}
-                className="xp-button py-2 px-3 text-xs font-bold text-black flex items-center"
+                className="win98-button py-1 px-2 text-xs font-bold text-black flex items-center"
               >
-                <Plus className="h-3 w-3 mr-2" />
+                <Plus className="h-3 w-3 mr-1" />
                 Create User
               </button>
             </div>
 
             {/* Create User Form */}
             {showCreateForm && (
-              <div className="xp-panel-inset p-3 mb-3">
+              <div className="win98-inset bg-white p-3 mb-3">
                 <h3 className="text-xs font-bold text-black mb-2">Create New User</h3>
                 <form onSubmit={createUser} className="space-y-2">
                   <input
                     type="email"
                     value={newUserEmail}
                     onChange={(e) => setNewUserEmail(e.target.value)}
-                    className="w-full xp-input text-xs"
+                    className="w-full win98-input text-xs"
                     placeholder="Email"
                     required
                   />
@@ -416,7 +417,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                     type="password"
                     value={newUserPassword}
                     onChange={(e) => setNewUserPassword(e.target.value)}
-                    className="w-full xp-input text-xs"
+                    className="w-full win98-input text-xs"
                     placeholder="Password"
                     required
                   />
@@ -424,7 +425,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                     type="text"
                     value={newUsername}
                     onChange={(e) => setNewUsername(e.target.value)}
-                    className="w-full xp-input text-xs"
+                    className="w-full win98-input text-xs"
                     placeholder="Username"
                     required
                   />
@@ -432,14 +433,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="xp-button-blue py-2 px-3 text-xs font-bold disabled:opacity-50"
+                      className="win98-button py-1 px-2 text-xs font-bold text-black disabled:opacity-50"
                     >
                       Create
                     </button>
                     <button
                       type="button"
                       onClick={() => setShowCreateForm(false)}
-                      className="xp-button py-2 px-3 text-xs font-bold text-black"
+                      className="win98-button py-1 px-2 text-xs font-bold text-black"
                     >
                       Cancel
                     </button>
@@ -449,13 +450,13 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
             )}
 
             {/* Users List */}
-            <div className="xp-panel-inset p-2 max-h-64 overflow-y-auto">
+            <div className="win98-inset bg-white p-2 max-h-64 overflow-y-auto">
               {users.length === 0 ? (
                 <div className="text-center text-black py-4">
                   <p className="text-xs">No users found</p>
                   <button
                     onClick={fetchUsers}
-                    className="mt-2 xp-button py-2 px-3 text-xs font-bold text-black"
+                    className="mt-2 win98-button py-1 px-2 text-xs font-bold text-black"
                   >
                     Refresh
                   </button>
@@ -463,14 +464,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
               ) : (
                 <div className="space-y-1">
                   {users.map((user) => (
-                    <div key={user.id} className="xp-panel-outset p-2 flex items-center justify-between">
+                    <div key={user.id} className="win98-outset bg-win98-gray p-2 flex items-center justify-between">
                       <div>
                         {editingUser?.id === user.id ? (
                           <input
                             type="text"
                             value={newUsername}
                             onChange={(e) => setNewUsername(e.target.value)}
-                            className="xp-input text-xs"
+                            className="win98-input text-xs"
                             onKeyPress={(e) => {
                               if (e.key === 'Enter') {
                                 updateUser(user.id, newUsername);
@@ -480,7 +481,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                         ) : (
                           <div>
                             <div className="text-xs font-bold text-black">{user.username}</div>
-                            <div className="text-xs text-xp-offline">
+                            <div className="text-xs text-win98-dark-gray">
                               ID: {user.user_id.substring(0, 8)}... | {new Date(user.created_at).toLocaleDateString()}
                             </div>
                           </div>
@@ -492,7 +493,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                             <button
                               onClick={() => updateUser(user.id, newUsername)}
                               disabled={loading}
-                              className="xp-button py-1 px-2 text-xs disabled:opacity-50"
+                              className="win98-button p-1 text-xs disabled:opacity-50"
                             >
                               Save
                             </button>
@@ -501,7 +502,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                                 setEditingUser(null);
                                 setNewUsername('');
                               }}
-                              className="xp-button py-1 px-2 text-xs"
+                              className="win98-button p-1 text-xs"
                             >
                               Cancel
                             </button>
@@ -513,14 +514,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                                 setEditingUser(user);
                                 setNewUsername(user.username);
                               }}
-                              className="xp-button p-1"
+                              className="win98-button p-1"
                             >
                               <Edit className="h-3 w-3" />
                             </button>
                             <button
                               onClick={() => deleteUser(user.user_id, user.id)}
                               disabled={loading}
-                              className="xp-button p-1 disabled:opacity-50"
+                              className="win98-button p-1 disabled:opacity-50"
                             >
                               <Trash2 className="h-3 w-3" />
                             </button>
@@ -535,7 +536,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
           </div>
 
           {error && (
-            <div className="xp-panel-inset p-2 text-xs text-red-600">
+            <div className="win98-inset bg-white p-2 text-xs text-red-600">
               Error: {error}
             </div>
           )}
