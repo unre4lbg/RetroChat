@@ -420,19 +420,16 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
               {getCurrentMessages().map((message) => (
                 <div
                   key={message.id}
-                  className={`msn-message ${
-                    message.user_id === currentUser?.id
-                      ? 'msn-message-own'
-                      : 'msn-message-other'
-                  }`}
+                  className="msn-message"
                 >
                   <span className="msn-username">
                     {message.username}
+                    {' says:'}
                   </span>
-                  <div className="msn-message-content">{message.content}</div>
-                  <div className="msn-timestamp">
+                  <span className="msn-message-content">{message.content}</span>
+                  <span className="msn-timestamp">
                     {new Date(message.created_at).toLocaleTimeString()}
-                  </div>
+                  </span>
                 </div>
               ))}
             </div>
@@ -522,19 +519,16 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
                     {getCurrentMessages().map((message) => (
                       <div
                         key={message.id}
-                        className={`msn-message ${
-                          message.user_id === currentUser?.id
-                            ? 'msn-message-own'
-                            : 'msn-message-other'
-                        }`}
+                        className="msn-message"
                       >
                         <span className="msn-username">
                           {message.username}
+                          {' says:'}
                         </span>
-                        <div className="msn-message-content">{message.content}</div>
-                        <div className="msn-timestamp">
+                        <span className="msn-message-content">{message.content}</span>
+                        <span className="msn-timestamp">
                           {new Date(message.created_at).toLocaleTimeString()}
-                        </div>
+                        </span>
                       </div>
                     ))}
                   </div>

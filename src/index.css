@@ -202,58 +202,45 @@ body {
   border-radius: 4px;
 }
 
-/* MSN Messenger Style Messages */
+/* MSN Messenger Style Messages - Simple Text */
 .msn-message {
-  background: #FFFFFF;
-  border: 1px solid #C0C0C0;
-  border-radius: 8px;
-  padding: 8px 12px;
-  margin: 4px 0;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+  margin: 2px 0;
   font-family: 'Tahoma', sans-serif;
   font-size: 11px;
-  line-height: 1.4;
-}
-
-.msn-message-own {
-  background: linear-gradient(180deg, #E8F4FD 0%, #D1E7F8 100%);
-  border: 1px solid #7BB3E0;
-  margin-left: 60px;
-  margin-right: 8px;
-}
-
-.msn-message-other {
-  background: linear-gradient(180deg, #FFFFFF 0%, #F8F8F8 100%);
-  border: 1px solid #C0C0C0;
-  margin-left: 8px;
-  margin-right: 60px;
+  line-height: 1.3;
+  padding: 0;
+  background: none;
+  border: none;
+  box-shadow: none;
 }
 
 .msn-username {
   font-weight: bold;
   color: #0066CC;
   font-size: 11px;
-  margin-bottom: 2px;
-  display: block;
+  margin-right: 4px;
+  display: inline;
 }
 
 .msn-message-content {
   color: #000000;
   font-size: 11px;
   word-wrap: break-word;
+  display: inline;
 }
 
 .msn-timestamp {
   color: #666666;
   font-size: 9px;
-  margin-top: 2px;
-  text-align: right;
+  margin-left: 8px;
+  display: inline;
 }
 
 .msn-chat-area {
   background: #FFFFFF;
   padding: 8px;
   font-family: 'Tahoma', sans-serif;
+  line-height: 1.3;
 }
 
 /* User Status Colors */
