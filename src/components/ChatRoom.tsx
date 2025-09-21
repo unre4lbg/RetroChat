@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
+import { User as SupabaseAuthUser } from '@supabase/supabase-js';
 import { Message, UserProfile } from '../types/supabase';
 import { LogOut, Send, Users, MessageSquare, Search, X, Minimize2, Maximize2 } from 'lucide-react';
 
@@ -10,7 +11,7 @@ interface ChatRoomProps {
 const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<SupabaseAuthUser | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [allUsers, setAllUsers] = useState<UserProfile[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
@@ -275,7 +276,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
   };
 
   const fetchPrivateMessages = async (otherUserId: string | null) => {
-    if (!currentUser || !otherUserId) return;
+    if (!currentUser || !currentUser.id || !otherUserId) return;
     
     try {
       const { data, error } = await supabase
