@@ -52,8 +52,8 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-win98-desktop flex items-center justify-center font-win98">
-        <div className="win98-panel p-4">
+      <div className="min-h-screen xp-login-bg flex items-center justify-center font-xp">
+        <div className="xp-welcome-panel p-4 xp-fade-in">
           <div className="text-black text-sm">
             Initializing system...
           </div>
