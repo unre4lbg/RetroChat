@@ -31,37 +31,62 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
   useEffect(() => {
     if (!currentUser) return;
 
-    const messageSubscription = supabase
+    // Subscribe to new messages
+    const channel = supabase
       .channel('messages')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'messages' },
+        (payload) => {
         const newMessage = payload.new as Message;
         
-        if (newMessage.receiver_id) {
-          // Private message
-          if (newMessage.user_id === currentUser.id || newMessage.receiver_id === currentUser.id) {
-            const chatKey = getChatKey(newMessage.user_id, newMessage.receiver_id);
-            setPrivateChats(prev => ({
-              ...prev,
-              [chatKey]: [...(prev[chatKey] || []), newMessage]
-            }));
+        if (newMessage.receiver_id && newMessage.receiver_id !== null) {
+          // This is a private message
+          if (
+            newMessage.user_id === currentUser.id ||
+            newMessage.receiver_id === currentUser.id
+          ) {
+            const otherUserId = newMessage.user_id === currentUser.id 
+              ? newMessage.receiver_id 
+              : newMessage.user_id;
+            const chatKey = getChatKey(currentUser.id, otherUserId);
             
-            // Add unread count if message is not from current user
-            if (newMessage.user_id !== currentUser.id) {
-              setUnreadCounts(prev => ({
+            setPrivateChats((prev) => {
+              const existingMessages = prev[chatKey] || [];
+              // Check if message already exists to avoid duplicates
+              if (existingMessages.find(msg => msg.id === newMessage.id)) {
+                return prev;
+              }
+              return {
                 ...prev,
-                [chatKey]: (prev[chatKey] || 0) + 1
+                [chatKey]: [...existingMessages, newMessage],
+              };
+            });
+
+            // Update unread count for messages not from current user
+            if (newMessage.user_id !== currentUser.id) {
+              setUnreadCounts((prev) => ({
+                ...prev,
+                [chatKey]: (prev[chatKey] || 0) + 1,
               }));
             }
           }
         } else {
-          // Public message
-          setMessages(prev => [...prev, newMessage]);
+          // This is a public message
+          setMessages((prev) => {
+            // Check if message already exists to avoid duplicates
+            if (prev.find(msg => msg.id === newMessage.id)) {
+              return prev;
+            }
+            return [...prev, newMessage];
+          });
         }
-      })
+        }
+      )
       .subscribe();
 
     return () => {
-      messageSubscription.unsubscribe();
+      supabase.removeChannel(channel);
     };
   }, [currentUser]);
 
@@ -223,25 +248,25 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
     
     const chatKey = getChatKey(currentUser.id, user.user_id);
     
-    // Always add to private chats list first
+    // Add to private chats if not already there
     setPrivateChats(prev => ({
       ...prev,
-      [chatKey]: prev[chatKey] || []
+      [chatKey]: prev[chatKey] || [],
     }));
     
+    // Set as selected user
     setSelectedUser(user);
     
-    // Fetch messages
-    if (!privateChats[chatKey] || privateChats[chatKey].length === 0) {
-      fetchPrivateMessages(user.user_id);
-    }
+    // Fetch private messages for this chat
+    fetchPrivateMessages(user.user_id);
     
-    // Clear unread count
+    // Clear unread count for this chat
     setUnreadCounts(prev => ({
       ...prev,
-      [chatKey]: 0
+      [chatKey]: 0,
     }));
     
+    // Switch to chat panel on mobile
     setActiveMobilePanel('chat');
   };
 
@@ -256,19 +281,19 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
       const { data, error } = await supabase
         .from('messages')
         .select('*')
-        .not('receiver_id', 'is', null)
+        .neq('receiver_id', null)
         .or(`and(user_id.eq.${currentUser.id},receiver_id.eq.${otherUserId}),and(user_id.eq.${otherUserId},receiver_id.eq.${currentUser.id})`)
         .order('created_at', { ascending: true });
       
       if (error) throw error;
       
       const chatKey = getChatKey(currentUser.id, otherUserId);
-      setPrivateChats(prev => ({
+      setPrivateChats((prev) => ({
         ...prev,
-        [chatKey]: data || []
+        [chatKey]: data || [],
       }));
-    } catch (error) {
-      console.error('Error fetching private messages:', error);
+    } catch (error: any) {
+      // Silent error handling
     }
   };
 
@@ -305,12 +330,18 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
   const getActiveChatUsers = () => {
     if (!currentUser) return [];
     
-    return Object.keys(privateChats).map(chatKey => {
+    const activeChatUsers: UserProfile[] = [];
+    
+    Object.keys(privateChats).forEach((chatKey) => {
       const [userId1, userId2] = chatKey.split('-');
       const otherUserId = userId1 === currentUser.id ? userId2 : userId1;
-      const user = allUsers.find(user => user.user_id === otherUserId);
-      return user;
-    }).filter((user): user is UserProfile => user !== undefined);
+      const user = allUsers.find((u) => u.user_id === otherUserId);
+      if (user) {
+        activeChatUsers.push(user);
+      }
+    });
+    
+    return activeChatUsers;
   };
 
   const getOnlineUsers = () => {
