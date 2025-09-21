@@ -302,79 +302,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
     <div className="min-h-screen bg-xp-desktop font-xp">
       {/* Desktop Layout */}
       <div className="hidden md:flex h-screen">
-        {/* Main Chat Area */}
-        <div className="flex-1 xp-window m-2 flex flex-col">
-          <div className="xp-titlebar">
-            <div className="flex items-center">
-              <MessageSquare className="h-4 w-4 mr-2" />
-              <span>
-                {selectedUser ? `Private Chat - ${selectedUser.username}` : 'Public Chat Room'}
-              </span>
-            </div>
-            <div className="flex">
-              <button className="xp-titlebar-button xp-minimize-btn">−</button>
-              <button className="xp-titlebar-button xp-maximize-btn">□</button>
-              <button onClick={handleLogout} className="xp-titlebar-button xp-close-btn">×</button>
-            </div>
-          </div>
-
-          {selectedUser && (
-            <div className="xp-toolbar p-1 border-b border-xp-border">
-              <button
-                onClick={() => setSelectedUser(null)}
-                className="xp-button text-xs px-2 py-1"
-              >
-                ← Back to Public Chat
-              </button>
-            </div>
-          )}
-
-          <div className="flex-1 p-2 bg-white overflow-y-auto">
-            <div className="space-y-1">
-              {getCurrentMessages().map((message) => (
-                <div
-                  key={message.id}
-                  className={`p-2 rounded text-xs ${
-                    message.user_id === currentUser?.id
-                      ? 'xp-message-own ml-8'
-                      : 'xp-message-other mr-8'
-                  }`}
-                >
-                  <div className="font-bold text-xp-blue mb-1">
-                    {message.username}
-                  </div>
-                  <div className="text-black">{message.content}</div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    {new Date(message.created_at).toLocaleTimeString()}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div ref={messagesEndRef} />
-          </div>
-
-          <div className="xp-toolbar p-2 border-t border-xp-border">
-            <form onSubmit={sendMessage} className="flex space-x-2">
-              <input
-                type="text"
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                placeholder={selectedUser ? `Message ${selectedUser.username}...` : "Type your message..."}
-                className="flex-1 xp-input text-xs"
-              />
-              <button
-                type="submit"
-                disabled={!newMessage.trim()}
-                className="xp-button-blue px-3 py-1 text-xs font-bold disabled:opacity-50 flex items-center"
-              >
-                <Send className="h-3 w-3 mr-1" />
-                Send
-              </button>
-            </form>
-          </div>
-        </div>
-
-        {/* Right Sidebar - Users and Private Chats */}
+        {/* Left Sidebar - Users and Private Chats */}
         <div className="w-64 xp-window m-2 flex flex-col">
           <div className="xp-titlebar">
             <div className="flex items-center">
@@ -457,6 +385,78 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
                 })}
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Main Chat Area */}
+        <div className="flex-1 xp-window m-2 flex flex-col">
+          <div className="xp-titlebar">
+            <div className="flex items-center">
+              <MessageSquare className="h-4 w-4 mr-2" />
+              <span>
+                {selectedUser ? `Private Chat - ${selectedUser.username}` : 'Public Chat Room'}
+              </span>
+            </div>
+            <div className="flex">
+              <button className="xp-titlebar-button xp-minimize-btn">−</button>
+              <button className="xp-titlebar-button xp-maximize-btn">□</button>
+              <button onClick={handleLogout} className="xp-titlebar-button xp-close-btn">×</button>
+            </div>
+          </div>
+
+          {selectedUser && (
+            <div className="xp-toolbar p-1 border-b border-xp-border">
+              <button
+                onClick={() => setSelectedUser(null)}
+                className="xp-button text-xs px-2 py-1"
+              >
+                ← Back to Public Chat
+              </button>
+            </div>
+          )}
+
+          <div className="flex-1 p-2 bg-white overflow-y-auto">
+            <div className="space-y-1">
+              {getCurrentMessages().map((message) => (
+                <div
+                  key={message.id}
+                  className={`p-2 rounded text-xs ${
+                    message.user_id === currentUser?.id
+                      ? 'xp-message-own ml-8'
+                      : 'xp-message-other mr-8'
+                  }`}
+                >
+                  <div className="font-bold text-xp-blue mb-1">
+                    {message.username}
+                  </div>
+                  <div className="text-black">{message.content}</div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    {new Date(message.created_at).toLocaleTimeString()}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div ref={messagesEndRef} />
+          </div>
+
+          <div className="xp-toolbar p-2 border-t border-xp-border">
+            <form onSubmit={sendMessage} className="flex space-x-2">
+              <input
+                type="text"
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                placeholder={selectedUser ? `Message ${selectedUser.username}...` : "Type your message..."}
+                className="flex-1 xp-input text-xs"
+              />
+              <button
+                type="submit"
+                disabled={!newMessage.trim()}
+                className="xp-button-blue px-3 py-1 text-xs font-bold disabled:opacity-50 flex items-center"
+              >
+                <Send className="h-3 w-3 mr-1" />
+                Send
+              </button>
+            </form>
           </div>
         </div>
       </div>
