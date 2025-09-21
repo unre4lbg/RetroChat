@@ -463,7 +463,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
 
       {/* Mobile Layout */}
       <div className="md:hidden h-screen flex flex-col">
-        <div className="xp-window flex-1 m-1 flex flex-col">
+        <div className="xp-window flex-1 m-1 flex flex-col overflow-hidden">
           <div className="xp-titlebar">
             <div className="flex items-center">
               <MessageSquare className="h-4 w-4 mr-2" />
@@ -475,7 +475,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
           </div>
 
           {/* Mobile Tabs */}
-          <div className="flex bg-xp-panel border-b border-xp-border flex-shrink-0">
+          <div className="flex bg-xp-panel border-b border-xp-border">
             <button
               onClick={() => setActiveMobilePanel('chat')}
               className={`flex-1 py-2 px-3 text-xs font-bold ${
@@ -503,11 +503,11 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
           </div>
 
           {/* Mobile Content */}
-          <div className="flex-1 flex flex-col min-h-0">
+          <div className="flex-1 flex flex-col overflow-hidden">
             {activeMobilePanel === 'chat' && (
               <>
                 {selectedUser && (
-                  <div className="xp-toolbar p-2 border-b border-xp-border flex-shrink-0">
+                  <div className="xp-toolbar p-2 border-b border-xp-border">
                     <button
                       onClick={() => setSelectedUser(null)}
                       className="xp-button text-xs px-2 py-1"
@@ -517,7 +517,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
                   </div>
                 )}
                 
-                <div className="flex-1 p-2 bg-white overflow-y-auto min-h-0">
+                <div className="flex-1 p-2 bg-white overflow-y-auto">
                   <div className="space-y-1">
                     {getCurrentMessages().map((message) => (
                       <div
@@ -541,7 +541,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
                   <div ref={messagesEndRef} />
                 </div>
 
-                <div className="xp-toolbar p-2 border-t border-xp-border flex-shrink-0">
+                <div className="xp-toolbar p-2 border-t border-xp-border">
                   <form onSubmit={sendMessage} className="flex space-x-2">
                     <input
                       type="text"
@@ -563,8 +563,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
             )}
 
             {activeMobilePanel === 'users' && (
-              <div className="flex-1 p-2 bg-xp-panel flex flex-col min-h-0">
-                <div className="mb-2 flex-shrink-0">
+              <div className="flex-1 p-2 bg-xp-panel flex flex-col overflow-hidden">
+                <div className="mb-2">
                   <div className="flex items-center xp-input-container">
                     <Search className="h-3 w-3 text-gray-500 mr-1" />
                     <input
@@ -577,7 +577,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
                   </div>
                 </div>
                 
-                <div className="xp-listbox flex-1 overflow-y-auto min-h-0">
+                <div className="xp-listbox flex-1 overflow-y-auto">
                   {filteredUsers.map((user) => (
                     <div
                       key={user.id}
@@ -593,8 +593,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
             )}
 
             {activeMobilePanel === 'private' && (
-              <div className="flex-1 p-2 bg-xp-panel flex flex-col min-h-0">
-                <div className="xp-listbox flex-1 overflow-y-auto min-h-0">
+              <div className="flex-1 p-2 bg-xp-panel flex flex-col overflow-hidden">
+                <div className="xp-listbox flex-1 overflow-y-auto">
                   {getActiveChatUsers().map((user) => {
                     const chatKey = getChatKey(currentUser.id, user.user_id);
                     const unreadCount = unreadCounts[chatKey] || 0;
