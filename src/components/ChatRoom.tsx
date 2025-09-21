@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
-import { User as SupabaseAuthUser } from '@supabase/supabase-js';
 import { Message, UserProfile } from '../types/supabase';
 import { LogOut, Send, Users, MessageSquare, Search, X, Minimize2, Maximize2 } from 'lucide-react';
 
@@ -11,7 +10,7 @@ interface ChatRoomProps {
 const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
-  const [currentUser, setCurrentUser] = useState<SupabaseAuthUser | null>(null);
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [allUsers, setAllUsers] = useState<UserProfile[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
@@ -30,7 +29,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
   }, []);
 
   useEffect(() => {
-    if (!currentUser) return;
+    if (!currentUser || !currentUser.id) return;
 
     // Subscribe to new messages
     const channel = supabase
@@ -39,49 +38,49 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'messages' },
         (payload) => {
-        const newMessage = payload.new as Message;
-        
-        if (newMessage.receiver_id && newMessage.receiver_id !== null) {
-          // This is a private message
-          if (
-            newMessage.user_id === currentUser.id ||
-            newMessage.receiver_id === currentUser.id
-          ) {
-            const otherUserId = newMessage.user_id === currentUser.id 
-              ? newMessage.receiver_id 
-              : newMessage.user_id;
-            const chatKey = getChatKey(currentUser.id, otherUserId);
-            
-            setPrivateChats((prev) => {
-              const existingMessages = prev[chatKey] || [];
+          const newMessage = payload.new as Message;
+          
+          if (newMessage.receiver_id && newMessage.receiver_id !== null) {
+            // This is a private message
+            if (
+              newMessage.user_id === currentUser.id ||
+              newMessage.receiver_id === currentUser.id
+            ) {
+              const otherUserId = newMessage.user_id === currentUser.id 
+                ? newMessage.receiver_id 
+                : newMessage.user_id;
+              const chatKey = getChatKey(currentUser.id, otherUserId);
+              
+              setPrivateChats((prev) => {
+                const existingMessages = prev[chatKey] || [];
+                // Check if message already exists to avoid duplicates
+                if (existingMessages.find(msg => msg.id === newMessage.id)) {
+                  return prev;
+                }
+                return {
+                  ...prev,
+                  [chatKey]: [...existingMessages, newMessage],
+                };
+              });
+
+              // Update unread count for messages not from current user
+              if (newMessage.user_id !== currentUser.id) {
+                setUnreadCounts((prev) => ({
+                  ...prev,
+                  [chatKey]: (prev[chatKey] || 0) + 1,
+                }));
+              }
+            }
+          } else {
+            // This is a public message
+            setMessages((prev) => {
               // Check if message already exists to avoid duplicates
-              if (existingMessages.find(msg => msg.id === newMessage.id)) {
+              if (prev.find(msg => msg.id === newMessage.id)) {
                 return prev;
               }
-              return {
-                ...prev,
-                [chatKey]: [...existingMessages, newMessage],
-              };
+              return [...prev, newMessage];
             });
-
-            // Update unread count for messages not from current user
-            if (newMessage.user_id !== currentUser.id) {
-              setUnreadCounts((prev) => ({
-                ...prev,
-                [chatKey]: (prev[chatKey] || 0) + 1,
-              }));
-            }
           }
-        } else {
-          // This is a public message
-          setMessages((prev) => {
-            // Check if message already exists to avoid duplicates
-            if (prev.find(msg => msg.id === newMessage.id)) {
-              return prev;
-            }
-            return [...prev, newMessage];
-          });
-        }
         }
       )
       .subscribe();
@@ -276,13 +275,13 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
   };
 
   const fetchPrivateMessages = async (otherUserId: string | null) => {
-    if (!currentUser || !currentUser.id || !otherUserId) return;
+    if (!currentUser || !otherUserId) return;
     
     try {
       const { data, error } = await supabase
         .from('messages')
         .select('*')
-        .neq('receiver_id', null)
+        .not('receiver_id', 'is', null)
         .or(`and(user_id.eq.${currentUser.id},receiver_id.eq.${otherUserId}),and(user_id.eq.${otherUserId},receiver_id.eq.${currentUser.id})`)
         .order('created_at', { ascending: true });
       
@@ -294,7 +293,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
         [chatKey]: data || [],
       }));
     } catch (error: any) {
-      // Silent error handling
+      console.error('Error fetching private messages:', error);
     }
   };
 
