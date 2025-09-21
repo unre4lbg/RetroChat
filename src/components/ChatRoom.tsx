@@ -60,8 +60,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
 
   useEffect(() => {
     if (currentUser && userProfile) {
-      const cleanup = trackOnlineUsers();
-      return cleanup;
+      return trackOnlineUsers(currentUser, userProfile);
     }
   }, [currentUser, userProfile]);
   useEffect(() => {
@@ -120,75 +119,68 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
     }
   };
 
-  const trackOnlineUsers = async () => {
-    if (!currentUser) return;
+  const trackOnlineUsers = (user: any, profile: UserProfile) => {
+    console.log('🔄 STARTING PRESENCE TRACKING for user:', user.id, profile?.username);
 
-    console.log('🔄 STARTING PRESENCE TRACKING for user:', currentUser.id, userProfile?.username);
-
-    try {
-      // Create a unique channel for presence with proper config
-      const channel = supabase.channel('online-users-presence', {
-        config: {
-          presence: {
-            key: currentUser.id,
-          },
+    // Create a unique channel for presence with proper config
+    const channel = supabase.channel('online-users-presence', {
+      config: {
+        presence: {
+          key: user.id,
         },
-      });
+      },
+    });
 
-      channel
-        .on('presence', { event: 'sync' }, () => {
-          console.log('Presence sync event triggered');
-          const state = channel.presenceState();
-          console.log('Current presence state:', state);
-          
-          // Extract user IDs from presence state
-          const onlineUserIds: string[] = [];
-          Object.keys(state).forEach(key => {
-            const presences = state[key];
-            if (presences && presences.length > 0) {
-              const userId = presences[0].user_id;
-              if (userId && !onlineUserIds.includes(userId)) {
-                onlineUserIds.push(userId);
-              }
+    channel
+      .on('presence', { event: 'sync' }, () => {
+        console.log('Presence sync event triggered');
+        const state = channel.presenceState();
+        console.log('Current presence state:', state);
+        
+        // Extract user IDs from presence state
+        const onlineUserIds: string[] = [];
+        Object.keys(state).forEach(key => {
+          const presences = state[key];
+          if (presences && presences.length > 0) {
+            const userId = presences[0].user_id;
+            if (userId && !onlineUserIds.includes(userId)) {
+              onlineUserIds.push(userId);
             }
-          });
-          
-          console.log('Extracted online user IDs:', onlineUserIds);
-          setOnlineUsers(onlineUserIds);
-        })
-        .on('presence', { event: 'join' }, ({ key, newPresences }) => {
-          console.log('User joined:', key, newPresences);
-        })
-        .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
-          console.log('User left:', key, leftPresences);
-        })
-        .subscribe(async (status) => {
-          console.log('Presence subscription status:', status);
-          if (status === 'SUBSCRIBED') {
-            console.log('Tracking presence for user:', currentUser.id, userProfile?.username);
-            const trackResult = await channel.track({
-              user_id: currentUser.id,
-              username: userProfile?.username,
-              online_at: new Date().toISOString(),
-            });
-            console.log('📍 Track result:', trackResult);
-            
-            // Force a sync after tracking
-            setTimeout(() => {
-              console.log('🔄 Current state after tracking:', channel.presenceState());
-            }, 1000);
           }
         });
+        
+        console.log('Extracted online user IDs:', onlineUserIds);
+        setOnlineUsers(onlineUserIds);
+      })
+      .on('presence', { event: 'join' }, ({ key, newPresences }) => {
+        console.log('User joined:', key, newPresences);
+      })
+      .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
+        console.log('User left:', key, leftPresences);
+      })
+      .subscribe(async (status) => {
+        console.log('Presence subscription status:', status);
+        if (status === 'SUBSCRIBED') {
+          console.log('Tracking presence for user:', user.id, profile?.username);
+          const trackResult = await channel.track({
+            user_id: user.id,
+            username: profile?.username,
+            online_at: new Date().toISOString(),
+          });
+          console.log('📍 Track result:', trackResult);
+          
+          // Force a sync after tracking
+          setTimeout(() => {
+            console.log('🔄 Current state after tracking:', channel.presenceState());
+          }, 1000);
+        }
+      });
 
-      return () => {
-        console.log('Unsubscribing from presence channel');
-        channel.untrack();
-        supabase.removeChannel(channel);
-      };
-    } catch (error) {
-      console.error('Error setting up presence tracking:', error);
-      return () => {}; // Return empty cleanup function on error
-    }
+    return () => {
+      console.log('Unsubscribing from presence channel');
+      channel.untrack();
+      supabase.removeChannel(channel);
+    };
   };
 
   const sendMessage = async (e: React.FormEvent) => {
