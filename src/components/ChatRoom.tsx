@@ -1050,7 +1050,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
                     }}
                     title={user.user_id === currentUser?.user_id ? 'Това сте вие' : 'Двоен клик за директен чат'}
                   >
-                    <div className="w-2 h-2 bg-icq-green rounded-full mr-1"></div>
+                    <OnlineStatus isOnline={onlineUserIds.has(user.user_id)} />
                     <span>{user.username}</span>
                     {user.user_id === currentUser?.user_id && (
                       <span className="ml-1 text-xs">(вие)</span>
@@ -1192,7 +1192,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
                     onDoubleClick={() => handleUserDoubleClick(user)}
                     title={user.user_id === currentUser?.user_id ? 'Това сте вие' : 'Двоен клик за директен чат'}
                   >
-                    <div className="w-2 h-2 bg-icq-green rounded-full mr-1"></div>
+                    <OnlineStatus isOnline={onlineUserIds.has(user.user_id)} />
                     <span>{user.username}</span>
                     {user.user_id === currentUser?.user_id && (
                       <span className="ml-1 text-xs">(вие)</span>
