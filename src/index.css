@@ -190,6 +190,48 @@ body {
   gap: 4px !important;
 }
 
+/* Windows XP Title Bar Buttons */
+.xp-titlebar-button {
+  width: 16px;
+  height: 14px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #F0F0F0 25%, #E8E8E8 75%, #D4D0C8 100%);
+  border: 1px outset #D4D0C8;
+  border-radius: 0px;
+  color: #000000;
+  font-size: 9px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 1px 1px 0px rgba(255, 255, 255, 0.8), inset -1px -1px 0px rgba(128, 128, 128, 0.5);
+  margin-left: 1px;
+}
+
+.xp-titlebar-button:hover {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F8F8F8 25%, #F0F0F0 75%, #E0E0E0 100%);
+}
+
+.xp-titlebar-button:active {
+  background: linear-gradient(180deg, #D4D0C8 0%, #E8E8E8 25%, #F0F0F0 75%, #FFFFFF 100%);
+  border: 1px inset #D4D0C8;
+  box-shadow: inset -1px -1px 0px rgba(255, 255, 255, 0.8), inset 1px 1px 0px rgba(128, 128, 128, 0.5);
+}
+
+.xp-close-button {
+  background: linear-gradient(180deg, #FF6B6B 0%, #FF5252 25%, #F44336 75%, #D32F2F 100%);
+  border: 1px outset #D32F2F;
+  color: #FFFFFF;
+}
+
+.xp-close-button:hover {
+  background: linear-gradient(180deg, #FF8A80 0%, #FF6B6B 25%, #FF5252 75%, #F44336 100%);
+}
+
+.xp-close-button:active {
+  background: linear-gradient(180deg, #D32F2F 0%, #F44336 25%, #FF5252 75%, #FF6B6B 100%);
+  border: 1px inset #D32F2F;
+}
 .username-with-status {
   display: flex !important;
   align-items: center !important;

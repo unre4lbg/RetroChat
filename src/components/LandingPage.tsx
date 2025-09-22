@@ -64,9 +64,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onAdminLogin }) => {
               <span>Retro Chat - Влизане</span>
             </div>
             <div className="flex">
-              <button className="w-4 h-4 bg-win98-gray win98-button text-xs">_</button>
-              <button className="w-4 h-4 bg-win98-gray win98-button text-xs ml-1">□</button>
-              <button className="w-4 h-4 bg-win98-gray win98-button text-xs ml-1">×</button>
+              <button className="xp-titlebar-button">_</button>
+              <button className="xp-titlebar-button">□</button>
+              <button className="xp-titlebar-button xp-close-button">×</button>
             </div>
           </div>
 
