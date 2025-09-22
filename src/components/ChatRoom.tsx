@@ -1247,9 +1247,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
                         onClick={() => handleUserDoubleClick(user)}
                         title={`Чат с ${user.username}${isOnline ? ' (онлайн)' : ' (офлайн)'}`}
                       >
-                        <div className={`w-2 h-2 rounded-full mr-1 ${
-                          isOnline ? 'bg-icq-green' : 'bg-win98-dark-gray'
-                        }`}></div>
+                        <OnlineStatus isOnline={isOnline} />
                         <span className={isOnline ? '' : 'text-win98-dark-gray'}>{user.username}</span>
                         <div className="ml-auto flex items-center">
                           {/* Show unread message indicator */}
