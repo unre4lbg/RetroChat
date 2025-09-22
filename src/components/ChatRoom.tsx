@@ -791,3 +791,5 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
     const shouldAddOptimistic = isDirectMessage 
       ? (selectedUser && tempMessage.receiver_id === selectedUser.user_id) // Direct chat: only if sending to selected user
       : !tempMessage.receiver_id; // Lobby: only if public message
+  }
+}
