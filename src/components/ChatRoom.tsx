@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 import { UserProfile } from '../types/supabase';
-import { Send, LogOut, Terminal, Users as UsersIcon, Smile, ArrowLeft, MessageCircle, MessageSquare } from 'lucide-react';
+import { Send, LogOut, Terminal, Users as UsersIcon, ArrowLeft, MessageCircle, MessageSquare } from 'lucide-react';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import OnlineStatus from './OnlineStatus';
 
@@ -28,7 +28,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
   const [newMessage, setNewMessage] = useState('');
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [realtimeStatus, setRealtimeStatus] = useState('Connecting...');
   const [subscriptionDetails, setSubscriptionDetails] = useState('');
   
@@ -81,31 +80,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
       user.username.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [users, onlineUserIds, searchTerm]);
-
-  // Windows 98 style emoticons
-  const emojis = [
-    { symbol: ':-)', name: 'Happy' },
-    { symbol: ':-(', name: 'Sad' },
-    { symbol: ';-)', name: 'Wink' },
-    { symbol: ':-P', name: 'Tongue' },
-    { symbol: ':-D', name: 'Laugh' },
-    { symbol: ':-O', name: 'Surprised' },
-    { symbol: ':-/', name: 'Confused' },
-    { symbol: ':-|', name: 'Neutral' },
-    { symbol: '8-)', name: 'Cool' },
-    { symbol: ':-*', name: 'Kiss' },
-    { symbol: '>:-(', name: 'Angry' },
-    { symbol: ':-X', name: 'Sealed' },
-    { symbol: 'O:-)', name: 'Angel' },
-    { symbol: '}:-)', name: 'Devil' },
-    { symbol: ':-S', name: 'Worried' },
-    { symbol: '8-|', name: 'Nerd' },
-  ];
-
-  const addEmoji = (emoji: string) => {
-    setNewMessage(prev => prev + emoji);
-    setShowEmojiPicker(false);
-  };
 
   // Handle user double click for direct messaging
   const handleUserDoubleClick = (user: UserProfile) => {
@@ -949,51 +923,11 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
                   }
                   maxLength={500}
                 />
-                <div className="relative">
-                  <button
-                    type="button"
-                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                    className="win98-button p-1 text-xs text-black flex items-center"
-                  >
-                    <Smile className="h-3 w-3" />
-                  </button>
-                  
-                  {showEmojiPicker && (
-                    <div className="absolute bottom-full right-0 mb-1 win98-panel p-2 z-10 w-48">
-                      <div className="win98-titlebar px-2 py-1 mb-2">
-                        <span className="text-xs font-bold">Emoticons</span>
-                      </div>
-                      <div className="grid grid-cols-4 gap-1 max-h-32 overflow-y-auto">
-                        {emojis.map((emoji, index) => (
-                          <button
-                            key={index}
-                            type="button"
-                            onClick={() => addEmoji(emoji.symbol)}
-                            className="win98-button p-1 text-xs text-black hover:bg-win98-light-gray"
-                            title={emoji.name}
-                          >
-                            {emoji.symbol}
-                          </button>
-                        ))}
-                      </div>
-                      <div className="mt-2 pt-2 border-t border-win98-dark-gray">
-                        <button
-                          type="button"
-                          onClick={() => setShowEmojiPicker(false)}
-                          className="w-full win98-button py-1 text-xs font-bold text-black"
-                        >
-                          Close
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
                 <button
                   type="submit"
                   disabled={!newMessage.trim()}
-                  className="p-1 text-xs text-black cursor-pointer flex items-center"
+                  className="win98-button px-3 py-2 text-xs font-bold text-white bg-gradient-to-b from-blue-400 to-blue-600 border-2 border-blue-700 hover:from-blue-500 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
                 >
-                  <div className="w-2 h-2 bg-icq-green rounded-full mr-2"></div>
                   <Send className="h-3 w-3 mr-1" />
                   Изпрати
                 </button>
