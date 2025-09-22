@@ -155,13 +155,28 @@ body {
 
 /* Online Status Dot - Make it more visible */
 .online-dot {
-  width: 8px !important;
-  height: 8px !important;
+  width: 10px !important;
+  height: 10px !important;
   background-color: #00FF00 !important;
-  border: 1px solid #008000 !important;
+  border: 2px solid #008000 !important;
   border-radius: 50% !important;
-  box-shadow: 0 0 3px rgba(0, 255, 0, 0.6) !important;
+  box-shadow: 0 0 4px rgba(0, 255, 0, 0.8), inset 0 0 2px rgba(255, 255, 255, 0.3) !important;
   display: inline-block !important;
-  margin-left: 4px !important;
+  margin-left: 6px !important;
   vertical-align: middle !important;
+  position: relative !important;
+  top: -1px !important;
+}
+
+.online-dot::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 4px;
+  background-color: #FFFFFF;
+  border-radius: 50%;
+  opacity: 0.7;
 }
