@@ -81,7 +81,7 @@ function App() {
       {showAdminPanel && isAuthenticated ? (
         <AdminPanel onBack={handleBackToLogin} />
       ) : isAuthenticated ? (
-        <ChatRoom onLogout={handleLogout} />
+        <ChatRoom onLogout={handleLogout} isAuthenticated={isAuthenticated} />
       ) : (
         <LandingPage onLogin={handleLogin} onAdminLogin={handleAdminLogin} />
       )}

@@ -19,9 +19,10 @@ interface Message {
 
 interface ChatRoomProps {
   onLogout: () => void;
+  isAuthenticated: boolean;
 }
 
-const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
+const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [onlineUserIds, setOnlineUserIds] = useState<Set<string>>(new Set());
