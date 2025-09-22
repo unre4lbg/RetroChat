@@ -791,5 +791,317 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
     const shouldAddOptimistic = isDirectMessage 
       ? (selectedUser && tempMessage.receiver_id === selectedUser.user_id) // Direct chat: only if sending to selected user
       : !tempMessage.receiver_id; // Lobby: only if public message
+
+    if (shouldAddOptimistic) {
+      setMessages(prev => [...prev, tempMessage]);
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('messages')
+        .insert({
+          user_id: currentUser.user_id,
+          username: currentUser.username,
+          content: newMessage.trim(),
+          receiver_id: receiverId
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error(`[${currentUser.username}] Error sending message:`, error);
+        setRealtimeStatus(`Error sending message: ${error.message}`);
+        
+        // Remove optimistic message on error
+        if (shouldAddOptimistic) {
+          setMessages(prev => prev.filter(msg => msg.id !== tempMessage.id));
+        }
+        return;
+      }
+
+      console.log(`[${currentUser.username}] Message sent successfully:`, data);
+      setRealtimeStatus(`Message sent successfully!`);
+      setNewMessage('');
+      
+    } catch (error) {
+      console.error(`[${currentUser.username}] Error in sendMessage:`, error);
+      setRealtimeStatus(`Error: ${error}`);
+      
+      // Remove optimistic message on error
+      if (shouldAddOptimistic) {
+        setMessages(prev => prev.filter(msg => msg.id !== tempMessage.id));
+      }
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      onLogout();
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-green-400 text-xl">Loading chat...</div>
+      </div>
+    );
+  }
+
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-red-400 text-xl">Error loading user profile</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-900 text-green-400 font-mono">
+      {/* Header */}
+      <div className="bg-gray-800 border-b border-green-400 p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            {isDirectMessage && selectedUser ? (
+              <button
+                onClick={returnToLobby}
+                className="flex items-center space-x-2 text-green-400 hover:text-green-300 transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Back to Lobby</span>
+              </button>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <Terminal className="w-6 h-6" />
+                <h1 className="text-xl font-bold">RetroChat Terminal</h1>
+              </div>
+            )}
+          </div>
+          
+          <div className="flex items-center space-x-4">
+            <OnlineStatus status={realtimeStatus} />
+            <span className="text-sm">
+              {isDirectMessage && selectedUser 
+                ? `Private chat with ${selectedUser.username}`
+                : `Welcome, ${currentUser.username}`
+              }
+            </span>
+            <button
+              onClick={handleLogout}
+              className="flex items-center space-x-2 bg-red-600 hover:bg-red-700 px-3 py-1 rounded transition-colors"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex h-[calc(100vh-80px)]">
+        {/* Mobile Panel Selector */}
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-green-400 flex">
+          <button
+            onClick={() => setActiveMobilePanel('chat')}
+            className={`flex-1 p-3 text-center ${activeMobilePanel === 'chat' ? 'bg-green-400 text-gray-900' : 'text-green-400'}`}
+          >
+            <MessageCircle className="w-5 h-5 mx-auto mb-1" />
+            <span className="text-xs">Chat</span>
+          </button>
+          <button
+            onClick={() => setActiveMobilePanel('users')}
+            className={`flex-1 p-3 text-center ${activeMobilePanel === 'users' ? 'bg-green-400 text-gray-900' : 'text-green-400'}`}
+          >
+            <UsersIcon className="w-5 h-5 mx-auto mb-1" />
+            <span className="text-xs">Users ({filteredOnlineUsers.length})</span>
+          </button>
+          <button
+            onClick={() => setActiveMobilePanel('activeChats')}
+            className={`flex-1 p-3 text-center ${activeMobilePanel === 'activeChats' ? 'bg-green-400 text-gray-900' : 'text-green-400'}`}
+          >
+            <MessageSquare className="w-5 h-5 mx-auto mb-1" />
+            <span className="text-xs">Chats ({activeChats.size})</span>
+          </button>
+        </div>
+
+        {/* Chat Area */}
+        <div className={`flex-1 flex flex-col ${activeMobilePanel === 'chat' ? 'block' : 'hidden md:flex'}`}>
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-2 pb-20 md:pb-4">
+            {messages.map((message) => (
+              <div
+                key={message.id}
+                className={`flex ${message.user_id === currentUser.user_id ? 'justify-end' : 'justify-start'}`}
+              >
+                <div
+                  className={`max-w-xs lg:max-w-md px-3 py-2 rounded-lg ${
+                    message.user_id === currentUser.user_id
+                      ? message.isOptimistic
+                        ? 'bg-blue-600 opacity-60 text-white'
+                        : 'bg-blue-600 text-white'
+                      : 'bg-gray-700 text-green-400'
+                  }`}
+                >
+                  <div className="text-xs opacity-75 mb-1">
+                    {message.username} • {new Date(message.created_at).toLocaleTimeString()}
+                    {message.isOptimistic && ' • Sending...'}
+                  </div>
+                  <div>{message.content}</div>
+                </div>
+              </div>
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Message Input */}
+          <div className="border-t border-green-400 p-4">
+            <form onSubmit={sendMessage} className="flex space-x-2">
+              <input
+                type="text"
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                placeholder={
+                  isDirectMessage && selectedUser
+                    ? `Message ${selectedUser.username}...`
+                    : "Type your message..."
+                }
+                className="flex-1 bg-gray-800 border border-green-400 rounded px-3 py-2 text-green-400 placeholder-green-600 focus:outline-none focus:border-green-300"
+                disabled={!currentUser}
+              />
+              <button
+                type="submit"
+                disabled={!newMessage.trim() || !currentUser}
+                className="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed px-4 py-2 rounded text-white transition-colors flex items-center space-x-2"
+              >
+                <Send className="w-4 h-4" />
+                <span>Send</span>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        {/* Online Users Panel */}
+        <div className={`w-80 bg-gray-800 border-l border-green-400 flex flex-col ${activeMobilePanel === 'users' ? 'block' : 'hidden md:flex'}`}>
+          <div className="p-4 border-b border-green-400">
+            <h2 className="text-lg font-bold mb-2 flex items-center">
+              <UsersIcon className="w-5 h-5 mr-2" />
+              Online Users ({filteredOnlineUsers.length})
+            </h2>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search users..."
+              className="w-full bg-gray-700 border border-green-400 rounded px-3 py-2 text-green-400 placeholder-green-600 focus:outline-none focus:border-green-300 text-sm"
+            />
+          </div>
+          <div className="flex-1 overflow-y-auto p-4">
+            <div className="space-y-2">
+              {filteredOnlineUsers.map((user) => (
+                <div
+                  key={user.id}
+                  onDoubleClick={() => handleUserDoubleClick(user)}
+                  className={`p-3 rounded cursor-pointer transition-colors ${
+                    user.user_id === currentUser?.user_id
+                      ? 'bg-green-600 text-white'
+                      : selectedUser?.user_id === user.user_id
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-700 hover:bg-gray-600'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                      <span className="font-medium">{user.username}</span>
+                      {user.user_id === currentUser?.user_id && (
+                        <span className="text-xs opacity-75">(You)</span>
+                      )}
+                    </div>
+                    {unreadMessages.has(user.user_id) && (
+                      <div className="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                        {unreadMessages.get(user.user_id)}
+                      </div>
+                    )}
+                  </div>
+                  {user.user_id !== currentUser?.user_id && (
+                    <div className="text-xs opacity-75 mt-1">
+                      Double-click to start private chat
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Active Chats Panel */}
+        <div className={`w-80 bg-gray-800 border-l border-green-400 flex flex-col ${activeMobilePanel === 'activeChats' ? 'block' : 'hidden md:flex'}`}>
+          <div className="p-4 border-b border-green-400">
+            <h2 className="text-lg font-bold flex items-center">
+              <MessageSquare className="w-5 h-5 mr-2" />
+              Active Chats ({activeChats.size})
+            </h2>
+          </div>
+          <div className="flex-1 overflow-y-auto p-4">
+            <div className="space-y-2">
+              {Array.from(activeChats).map((userId) => {
+                const user = users.find(u => u.user_id === userId);
+                if (!user) return null;
+                
+                return (
+                  <div
+                    key={userId}
+                    onClick={() => handleUserDoubleClick(user)}
+                    className={`p-3 rounded cursor-pointer transition-colors relative ${
+                      selectedUser?.user_id === userId
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-700 hover:bg-gray-600'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <div className={`w-2 h-2 rounded-full ${
+                          onlineUserIds.has(userId) ? 'bg-green-400' : 'bg-gray-500'
+                        }`}></div>
+                        <span className="font-medium">{user.username}</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        {unreadMessages.has(userId) && (
+                          <div className="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                            {unreadMessages.get(userId)}
+                          </div>
+                        )}
+                        <button
+                          onClick={(e) => removeActiveChat(userId, e)}
+                          className="text-red-400 hover:text-red-300 text-xs"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    </div>
+                    <div className="text-xs opacity-75 mt-1">
+                      {onlineUserIds.has(userId) ? 'Online' : 'Offline'}
+                    </div>
+                  </div>
+                );
+              })}
+              {activeChats.size === 0 && (
+                <div className="text-center text-gray-500 py-8">
+                  <MessageSquare className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                  <p>No active chats</p>
+                  <p className="text-xs mt-1">Double-click a user to start chatting</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ChatRoom;
   }
 }
