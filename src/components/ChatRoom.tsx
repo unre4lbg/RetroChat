@@ -790,4 +790,4 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
     // Add optimistic message immediately to UI ONLY if it belongs to current view
     const shouldAddOptimistic = isDirectMessage 
       ? (selectedUser && tempMessage.receiver_id === selectedUser.user_id) // Direct chat: only if sending to selected user
-      : !tempMessage.receiver_id; //
+      : !tempMessage.receiver_id; // Lobby: only if public message
