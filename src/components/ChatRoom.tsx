@@ -860,95 +860,120 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-green-400 font-mono">
+    <div className="min-h-screen xp-login-bg font-win98">
       {/* Header */}
-      <div className="bg-gray-800 border-b border-green-400 p-4">
+      <div className="win98-window">
+        <div className="win98-titlebar flex items-center justify-between px-2 py-1">
+          <div className="flex items-center">
+            <Terminal className="h-4 w-4 mr-1" />
+            <span>
+              {isDirectMessage && selectedUser 
+                ? `Частен чат с ${selectedUser.username}`
+                : 'RetroChat - Главно лоби'
+              }
+            </span>
+          </div>
+          <div className="flex">
+            <button className="xp-titlebar-button mr-1">
+              <span>_</span>
+            </button>
+            <button className="xp-titlebar-button mr-1">
+              <span>□</span>
+            </button>
+            <button 
+              onClick={handleLogout}
+              className="xp-titlebar-button xp-close-button"
+            >
+              <span>×</span>
+            </button>
+          </div>
+        </div>
+        
+        <div className="win98-panel p-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             {isDirectMessage && selectedUser ? (
               <button
                 onClick={returnToLobby}
-                className="flex items-center space-x-2 text-green-400 hover:text-green-300 transition-colors"
+                className="win98-button py-1 px-2 text-xs font-bold text-black flex items-center"
               >
                 <ArrowLeft className="w-4 h-4" />
-                <span>Back to Lobby</span>
+                <span>Назад към лобито</span>
               </button>
             ) : (
               <div className="flex items-center space-x-2">
                 <Terminal className="w-6 h-6" />
-                <h1 className="text-xl font-bold">RetroChat Terminal</h1>
+                <h1 className="text-sm font-bold text-black">RetroChat v1.0</h1>
               </div>
             )}
           </div>
           
           <div className="flex items-center space-x-4">
-            <OnlineStatus status={realtimeStatus} />
-            <span className="text-sm">
+            <span className="text-xs text-black">
               {isDirectMessage && selectedUser 
-                ? `Private chat with ${selectedUser.username}`
-                : `Welcome, ${currentUser.username}`
+                ? `Чат с ${selectedUser.username}`
+                : `Добре дошъл, ${currentUser.username}`
               }
             </span>
             <button
               onClick={handleLogout}
-              className="flex items-center space-x-2 bg-red-600 hover:bg-red-700 px-3 py-1 rounded transition-colors"
+              className="win98-button py-1 px-2 text-xs font-bold text-black flex items-center"
             >
               <LogOut className="w-4 h-4" />
-              <span>Logout</span>
+              <span>Изход</span>
             </button>
           </div>
         </div>
+        </div>
       </div>
 
-      <div className="flex h-[calc(100vh-80px)]">
+      <div className="flex h-[calc(100vh-120px)]">
         {/* Mobile Panel Selector */}
-        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-green-400 flex">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 win98-panel border-t-2 border-win98-dark-gray flex">
           <button
             onClick={() => setActiveMobilePanel('chat')}
-            className={`flex-1 p-3 text-center ${activeMobilePanel === 'chat' ? 'bg-green-400 text-gray-900' : 'text-green-400'}`}
+            className={`flex-1 p-2 text-center text-xs ${activeMobilePanel === 'chat' ? 'win98-inset bg-win98-light-gray' : 'win98-button'}`}
           >
             <MessageCircle className="w-5 h-5 mx-auto mb-1" />
-            <span className="text-xs">Chat</span>
+            <span>Чат</span>
           </button>
           <button
             onClick={() => setActiveMobilePanel('users')}
-            className={`flex-1 p-3 text-center ${activeMobilePanel === 'users' ? 'bg-green-400 text-gray-900' : 'text-green-400'}`}
+            className={`flex-1 p-2 text-center text-xs ${activeMobilePanel === 'users' ? 'win98-inset bg-win98-light-gray' : 'win98-button'}`}
           >
             <UsersIcon className="w-5 h-5 mx-auto mb-1" />
-            <span className="text-xs">Users ({filteredOnlineUsers.length})</span>
+            <span>Потребители ({filteredOnlineUsers.length})</span>
           </button>
           <button
             onClick={() => setActiveMobilePanel('activeChats')}
-            className={`flex-1 p-3 text-center ${activeMobilePanel === 'activeChats' ? 'bg-green-400 text-gray-900' : 'text-green-400'}`}
+            className={`flex-1 p-2 text-center text-xs ${activeMobilePanel === 'activeChats' ? 'win98-inset bg-win98-light-gray' : 'win98-button'}`}
           >
             <MessageSquare className="w-5 h-5 mx-auto mb-1" />
-            <span className="text-xs">Chats ({activeChats.size})</span>
+            <span>Чатове ({activeChats.size})</span>
           </button>
         </div>
 
         {/* Chat Area */}
-        <div className={`flex-1 flex flex-col ${activeMobilePanel === 'chat' ? 'block' : 'hidden md:flex'}`}>
+        <div className={`flex-1 flex flex-col win98-window ${activeMobilePanel === 'chat' ? 'block' : 'hidden md:flex'}`}>
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-2 pb-20 md:pb-4">
+          <div className="flex-1 overflow-y-auto win98-inset bg-white p-2 space-y-2 pb-20 md:pb-4">
             {messages.map((message) => (
               <div
                 key={message.id}
                 className={`flex ${message.user_id === currentUser.user_id ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-xs lg:max-w-md px-3 py-2 rounded-lg ${
+                  className={`max-w-xs lg:max-w-md px-2 py-1 win98-outset ${
                     message.user_id === currentUser.user_id
-                      ? message.isOptimistic
-                        ? 'bg-blue-600 opacity-60 text-white'
-                        : 'bg-blue-600 text-white'
-                      : 'bg-gray-700 text-green-400'
+                      ? 'bg-win98-light-blue text-black'
+                      : 'bg-win98-gray text-black'
                   }`}
                 >
-                  <div className="text-xs opacity-75 mb-1">
+                  <div className="text-xs text-win98-dark-gray mb-1">
                     {message.username} • {new Date(message.created_at).toLocaleTimeString()}
-                    {message.isOptimistic && ' • Sending...'}
+                    {message.isOptimistic && ' • Изпраща се...'}
                   </div>
-                  <div>{message.content}</div>
+                  <div className="text-xs">{message.content}</div>
                 </div>
               </div>
             ))}
@@ -956,7 +981,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
           </div>
 
           {/* Message Input */}
-          <div className="border-t border-green-400 p-4">
+          <div className="win98-panel p-2 border-t-2 border-win98-dark-gray">
             <form onSubmit={sendMessage} className="flex space-x-2">
               <input
                 type="text"
@@ -964,70 +989,72 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder={
                   isDirectMessage && selectedUser
-                    ? `Message ${selectedUser.username}...`
-                    : "Type your message..."
+                    ? `Съобщение до ${selectedUser.username}...`
+                    : "Напиши съобщение..."
                 }
-                className="flex-1 bg-gray-800 border border-green-400 rounded px-3 py-2 text-green-400 placeholder-green-600 focus:outline-none focus:border-green-300"
+                className="flex-1 win98-input text-xs"
                 disabled={!currentUser}
               />
               <button
                 type="submit"
                 disabled={!newMessage.trim() || !currentUser}
-                className="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed px-4 py-2 rounded text-white transition-colors flex items-center space-x-2"
+                className="win98-button py-1 px-2 text-xs font-bold text-black disabled:opacity-50 flex items-center space-x-1"
               >
                 <Send className="w-4 h-4" />
-                <span>Send</span>
+                <span>Изпрати</span>
               </button>
             </form>
           </div>
         </div>
 
         {/* Online Users Panel */}
-        <div className={`w-80 bg-gray-800 border-l border-green-400 flex flex-col ${activeMobilePanel === 'users' ? 'block' : 'hidden md:flex'}`}>
-          <div className="p-4 border-b border-green-400">
-            <h2 className="text-lg font-bold mb-2 flex items-center">
+        <div className={`w-80 win98-window border-l-2 border-win98-dark-gray flex flex-col ${activeMobilePanel === 'users' ? 'block' : 'hidden md:flex'}`}>
+          <div className="win98-titlebar">
+            <span className="flex items-center">
               <UsersIcon className="w-5 h-5 mr-2" />
-              Online Users ({filteredOnlineUsers.length})
-            </h2>
+              Онлайн потребители ({filteredOnlineUsers.length})
+            </span>
+          </div>
+          <div className="win98-panel p-2">
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search users..."
-              className="w-full bg-gray-700 border border-green-400 rounded px-3 py-2 text-green-400 placeholder-green-600 focus:outline-none focus:border-green-300 text-sm"
+              placeholder="Търси потребители..."
+              className="w-full win98-input text-xs"
             />
           </div>
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 overflow-y-auto win98-inset bg-white p-2">
             <div className="space-y-2">
               {filteredOnlineUsers.map((user) => (
                 <div
                   key={user.id}
                   onDoubleClick={() => handleUserDoubleClick(user)}
-                  className={`p-3 rounded cursor-pointer transition-colors ${
+                  className={`p-2 cursor-pointer ${
                     user.user_id === currentUser?.user_id
-                      ? 'bg-green-600 text-white'
+                      ? 'win98-inset bg-win98-light-blue text-black'
                       : selectedUser?.user_id === user.user_id
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-700 hover:bg-gray-600'
+                      ? 'win98-inset bg-icq-orange text-white'
+                      : 'win98-outset bg-win98-gray text-black hover:bg-win98-light-gray'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                      <span className="font-medium">{user.username}</span>
+                      <div className="online-dot"></div>
+                      <span className="text-xs font-bold">{user.username}</span>
                       {user.user_id === currentUser?.user_id && (
-                        <span className="text-xs opacity-75">(You)</span>
+                        <span className="text-xs">(Ти)</span>
                       )}
                     </div>
                     {unreadMessages.has(user.user_id) && (
-                      <div className="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                      <div className="win98-outset bg-red-600 text-white text-xs w-4 h-4 flex items-center justify-center">
                         {unreadMessages.get(user.user_id)}
                       </div>
                     )}
                   </div>
                   {user.user_id !== currentUser?.user_id && (
-                    <div className="text-xs opacity-75 mt-1">
-                      Double-click to start private chat
+                    <div className="text-xs text-win98-dark-gray mt-1">
+                      Двоен клик за частен чат
                     </div>
                   )}
                 </div>
@@ -1037,14 +1064,14 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
         </div>
 
         {/* Active Chats Panel */}
-        <div className={`w-80 bg-gray-800 border-l border-green-400 flex flex-col ${activeMobilePanel === 'activeChats' ? 'block' : 'hidden md:flex'}`}>
-          <div className="p-4 border-b border-green-400">
-            <h2 className="text-lg font-bold flex items-center">
+        <div className={`w-80 win98-window border-l-2 border-win98-dark-gray flex flex-col ${activeMobilePanel === 'activeChats' ? 'block' : 'hidden md:flex'}`}>
+          <div className="win98-titlebar">
+            <span className="flex items-center">
               <MessageSquare className="w-5 h-5 mr-2" />
-              Active Chats ({activeChats.size})
-            </h2>
+              Активни чатове ({activeChats.size})
+            </span>
           </div>
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 overflow-y-auto win98-inset bg-white p-2">
             <div className="space-y-2">
               {Array.from(activeChats).map((userId) => {
                 const user = users.find(u => u.user_id === userId);
@@ -1054,44 +1081,44 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
                   <div
                     key={userId}
                     onClick={() => handleUserDoubleClick(user)}
-                    className={`p-3 rounded cursor-pointer transition-colors relative ${
+                    className={`p-2 cursor-pointer relative ${
                       selectedUser?.user_id === userId
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-700 hover:bg-gray-600'
+                        ? 'win98-inset bg-icq-orange text-white'
+                        : 'win98-outset bg-win98-gray text-black hover:bg-win98-light-gray'
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         <div className={`w-2 h-2 rounded-full ${
-                          onlineUserIds.has(userId) ? 'bg-green-400' : 'bg-gray-500'
+                          onlineUserIds.has(userId) ? 'online-dot' : 'bg-win98-dark-gray'
                         }`}></div>
-                        <span className="font-medium">{user.username}</span>
+                        <span className="text-xs font-bold">{user.username}</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         {unreadMessages.has(userId) && (
-                          <div className="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                          <div className="win98-outset bg-red-600 text-white text-xs w-4 h-4 flex items-center justify-center">
                             {unreadMessages.get(userId)}
                           </div>
                         )}
                         <button
                           onClick={(e) => removeActiveChat(userId, e)}
-                          className="text-red-400 hover:text-red-300 text-xs"
+                          className="win98-button text-xs px-1"
                         >
                           ×
                         </button>
                       </div>
                     </div>
-                    <div className="text-xs opacity-75 mt-1">
-                      {onlineUserIds.has(userId) ? 'Online' : 'Offline'}
+                    <div className="text-xs text-win98-dark-gray mt-1">
+                      {onlineUserIds.has(userId) ? 'Онлайн' : 'Офлайн'}
                     </div>
                   </div>
                 );
               })}
               {activeChats.size === 0 && (
-                <div className="text-center text-gray-500 py-8">
-                  <MessageSquare className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                  <p>No active chats</p>
-                  <p className="text-xs mt-1">Double-click a user to start chatting</p>
+                <div className="text-center text-win98-dark-gray py-8">
+                  <MessageSquare className="w-12 h-12 mx-auto mb-2" />
+                  <p className="text-xs">Няма активни чатове</p>
+                  <p className="text-xs mt-1">Двоен клик върху потребител за чат</p>
                 </div>
               )}
             </div>
