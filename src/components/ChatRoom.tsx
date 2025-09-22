@@ -321,6 +321,11 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
           console.log(`[${currentUser.username}] Payload:`, payload);
           console.log(`[${currentUser.username}] Event type:`, payload.eventType);
           console.log(`[${currentUser.username}] New data:`, payload.new);
+          console.log(`[${currentUser.username}] === REALTIME DEBUG INFO ===`);
+          console.log(`[${currentUser.username}] Current user ID:`, currentUser.user_id);
+          console.log(`[${currentUser.username}] Message user_id:`, payload.new?.user_id);
+          console.log(`[${currentUser.username}] Message receiver_id:`, payload.new?.receiver_id);
+          console.log(`[${currentUser.username}] Message receiver_id type:`, typeof payload.new?.receiver_id);
           
           if (payload.eventType === 'INSERT' && payload.new) {
             console.log('RAW REALTIME PAYLOAD.NEW:', payload.new);
