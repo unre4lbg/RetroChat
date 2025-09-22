@@ -603,7 +603,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
         userChannelRef.current = null;
       }
     };
-  }, [currentUser, isDirectMessage, selectedUser]);
+  }, [currentUser, currentUser?.user_id, isDirectMessage, selectedUser]);
 
   useEffect(() => {
     scrollToBottom();
