@@ -5,6 +5,7 @@ import { UserProfile } from '../types/supabase';
 import { Send, LogOut, Terminal, Users as UsersIcon, ArrowLeft, MessageCircle, MessageSquare } from 'lucide-react';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import OnlineStatus from './OnlineStatus';
+import OnlineStatus from './OnlineStatus';
 
 // Extended Message interface to support optimistic updates
 interface Message {
@@ -69,6 +70,41 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
   const userChannelRef = useRef<RealtimeChannel | null>(null);
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const lastEventTimeRef = useRef<string>(new Date().toISOString());
+
+  // ICQ sound effect function
+  const playICQSound = () => {
+    try {
+      // Create audio context for better browser compatibility
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      
+      // ICQ "Uh Oh!" sound frequencies and timing
+      const playTone = (frequency: number, duration: number, delay: number = 0) => {
+        setTimeout(() => {
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          
+          oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+          oscillator.type = 'sine';
+          
+          gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+          
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + duration);
+        }, delay);
+      };
+      
+      // Play ICQ-like "Uh Oh!" sound sequence
+      playTone(800, 0.15, 0);     // First tone
+      playTone(600, 0.15, 150);   // Second tone (lower)
+      playTone(400, 0.2, 300);    // Third tone (even lower)
+    } catch (error) {
+      console.log('Audio not supported or blocked:', error);
+    }
+  };
 
   // Filter online users based on search term
   const filteredOnlineUsers = useMemo(() => {
@@ -206,10 +242,18 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
                 return updatedMessages;
               });
               
+              // Play ICQ sound for incoming messages via polling (not from current user)
+              if (newMessage.user_id !== currentUser.user_id) {
+                playICQSound();
+              }
+              
               setRealtimeStatus(`Message received via polling from ${newMessage.username}!`);
             } else if (!isDirectMessage && newMessage.receiver_id === currentUser.user_id) {
               // User is in lobby but received a private message - increment unread count
               const senderId = newMessage.user_id;
+              
+              // Play ICQ sound for private messages received via polling while in lobby
+              playICQSound();
               
               // Add sender to active chats when receiving a private message via polling
               setActiveChats(prev => new Set([...prev, senderId]));
@@ -348,6 +392,12 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
             if (shouldShowMessage) {
               console.log(`[${currentUser.username}] === ADDING MESSAGE TO STATE (REAL-TIME) ===`);
               console.log(`[${currentUser.username}] Reason: shouldShowMessage = true`);
+              
+              // Play ICQ sound for incoming messages (not from current user)
+              if (newMessage.user_id !== currentUser.user_id) {
+                playICQSound();
+              }
+              
               setMessages(prev => {
                 console.log(`[${currentUser.username}] Processing message from:`, newMessage.username);
                 // Filter out duplicates and optimistic messages that match this real message
@@ -368,6 +418,10 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
             } else if (!isDirectMessage && newMessage.receiver_id === currentUser.user_id) {
               console.log(`[${currentUser.username}] === INCREMENTING UNREAD COUNT (REAL-TIME) ===`);
               console.log(`[${currentUser.username}] Reason: Private message received while in lobby`);
+              
+              // Play ICQ sound for private messages received while in lobby
+              playICQSound();
+              
               // User is in lobby but received a private message - increment unread count
               const senderId = newMessage.user_id;
               
