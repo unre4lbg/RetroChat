@@ -241,6 +241,12 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
                 return updatedMessages;
               });
               
+              // Update lastEventTimeRef to track the newest message we've seen
+              if (newMessage.created_at && new Date(newMessage.created_at).getTime() > new Date(lastEventTimeRef.current).getTime()) {
+                lastEventTimeRef.current = newMessage.created_at;
+                console.log(`[${currentUser.username}] Updated lastEventTimeRef from polling to:`, lastEventTimeRef.current);
+              }
+              
               // Play ICQ sound for incoming messages via polling (not from current user)
               if (newMessage.user_id !== currentUser.user_id) {
                 playICQSound();
@@ -412,6 +418,12 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
                 console.log(`[${currentUser.username}] Updated messages count:`, updatedMessages.length);
                 return updatedMessages;
               });
+              
+              // Update lastEventTimeRef to track the newest message we've seen
+              if (newMessage.created_at && new Date(newMessage.created_at).getTime() > new Date(lastEventTimeRef.current).getTime()) {
+                lastEventTimeRef.current = newMessage.created_at;
+                console.log(`[${currentUser.username}] Updated lastEventTimeRef from real-time to:`, lastEventTimeRef.current);
+              }
 
               setRealtimeStatus(`Message received from ${payload.new.username}!`);
             } else if (!isDirectMessage && newMessage.receiver_id === currentUser.user_id) {
@@ -658,6 +670,13 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
         });
       });
       setMessages(data);
+      
+      // Update lastEventTimeRef to the newest message's timestamp
+      if (data.length > 0) {
+        const newestMessage = data[data.length - 1]; // Last message (newest due to ascending order)
+        lastEventTimeRef.current = newestMessage.created_at;
+        console.log(`[${currentUser?.username}] Updated lastEventTimeRef to:`, lastEventTimeRef.current);
+      }
     }
   };
 
@@ -683,6 +702,13 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
         });
       });
       setMessages(data);
+      
+      // Update lastEventTimeRef to the newest message's timestamp
+      if (data.length > 0) {
+        const newestMessage = data[data.length - 1]; // Last message (newest due to ascending order)
+        lastEventTimeRef.current = newestMessage.created_at;
+        console.log(`[${currentUser.username}] Updated lastEventTimeRef to:`, lastEventTimeRef.current);
+      }
     }
   };
 
@@ -758,9 +784,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout }) => {
     
     // Clear input field immediately
     setNewMessage('');
-
-    // Update last event time to prevent polling from picking up our own message
-    lastEventTimeRef.current = new Date().toISOString();
 
     console.log(`[${currentUser.username}] === INSERTING TO DATABASE ===`);
     console.log(`[${currentUser.username}] Database insert receiver_id:`, receiverId);
