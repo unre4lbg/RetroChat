@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import { UserProfile } from '../types/supabase';
 import { Send, LogOut, Terminal, Users as UsersIcon, Smile, ArrowLeft, MessageCircle, MessageSquare } from 'lucide-react';
 import { RealtimeChannel } from '@supabase/supabase-js';
+import OnlineStatus from './OnlineStatus';
 
 // Extended Message interface to support optimistic updates
 interface Message {
