@@ -155,28 +155,43 @@ body {
 
 /* Online Status Dot - Make it more visible */
 .online-dot {
-  width: 10px !important;
-  height: 10px !important;
-  background-color: #00FF00 !important;
-  border: 2px solid #008000 !important;
+  width: 8px !important;
+  height: 8px !important;
+  background: radial-gradient(circle, #00FF00 0%, #00CC00 70%, #008000 100%) !important;
+  border: 1px solid #004000 !important;
   border-radius: 50% !important;
-  box-shadow: 0 0 4px rgba(0, 255, 0, 0.8), inset 0 0 2px rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 
+    0 0 3px rgba(0, 255, 0, 0.6),
+    inset 0 1px 1px rgba(255, 255, 255, 0.8),
+    inset 0 -1px 1px rgba(0, 128, 0, 0.3) !important;
   display: inline-block !important;
-  margin-left: 6px !important;
+  margin-left: 4px !important;
   vertical-align: middle !important;
   position: relative !important;
-  top: -1px !important;
+  top: 0px !important;
+  flex-shrink: 0 !important;
 }
 
 .online-dot::before {
   content: '';
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 4px;
-  height: 4px;
-  background-color: #FFFFFF;
+  top: 1px;
+  left: 1px;
+  width: 2px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 50%;
-  opacity: 0.7;
+}
+
+/* Ensure online status is visible in user lists */
+.user-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+.username-with-status {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
 }
