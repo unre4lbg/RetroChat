@@ -6,10 +6,15 @@ interface OnlineStatusProps {
 }
 
 const OnlineStatus: React.FC<OnlineStatusProps> = ({ isOnline, className = '' }) => {
-  if (!isOnline) return null;
-  
   return (
-    <span className={`online-dot ${className}`} title="Онлайн"></span>
+    <span 
+      className={`inline-block w-2 h-2 rounded-full mr-1 flex-shrink-0 ${
+        isOnline 
+          ? 'bg-green-500 shadow-sm' 
+          : 'bg-gray-400'
+      } ${className}`} 
+      title={isOnline ? "Онлайн" : "Офлайн"}
+    />
   );
 };
 
