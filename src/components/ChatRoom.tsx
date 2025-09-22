@@ -1103,5 +1103,3 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
 };
 
 export default ChatRoom;
-  }
-}
