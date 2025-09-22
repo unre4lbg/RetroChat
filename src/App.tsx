@@ -15,7 +15,11 @@ function App() {
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
+        if (!session && event !== 'SIGNED_OUT') {
+          // Clear any invalid refresh tokens from local storage
+          await supabase.auth.signOut();
+        }
         setIsAuthenticated(!!session);
         setLoading(false);
       }
@@ -25,8 +29,18 @@ function App() {
   }, []);
 
   const checkAuthState = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    setIsAuthenticated(!!session);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        // Clear any invalid refresh tokens from local storage
+        await supabase.auth.signOut();
+      }
+      setIsAuthenticated(!!session);
+    } catch (error) {
+      // If there's an error getting the session, clear the auth state
+      await supabase.auth.signOut();
+      setIsAuthenticated(false);
+    }
     setLoading(false);
   };
 
