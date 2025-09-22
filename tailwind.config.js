@@ -4,12 +4,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        'win98-gray': '#D4D0C8',
+        'win98-gray': '#ECE9D8',
         'win98-light-gray': '#F0F0F0',
         'win98-dark-gray': '#808080',
         'win98-blue': '#0A246A',
         'win98-light-blue': '#A6CAF0',
         'win98-desktop': '#245EDC',
+        'icq-orange': '#FF6600',
       },
       fontFamily: {
         'win98': ['Tahoma', 'MS Sans Serif', 'sans-serif'],
