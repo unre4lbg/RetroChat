@@ -968,37 +968,38 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
         </div>
       </div>
 
-      {/* Main content with proper spacing for fixed header on mobile */}
-      <div className="md:flex h-[calc(100vh-160px)] mt-[130px] md:mt-0">
-        {/* Mobile Panel Selector - Fixed at bottom */}
-        <div className="md:hidden fixed bottom-0 left-0 right-0 win98-panel border-t-2 border-win98-dark-gray flex z-40">
-          <button
-            onClick={() => setActiveMobilePanel('chat')}
-            className={`flex-1 p-2 text-center text-xs ${activeMobilePanel === 'chat' ? 'win98-inset bg-win98-light-gray' : 'win98-button'}`}
-          >
-            <MessageCircle className="w-5 h-5 mx-auto mb-1" />
-            <span>Чат</span>
-          </button>
-          <button
-            onClick={() => setActiveMobilePanel('users')}
-            className={`flex-1 p-2 text-center text-xs ${activeMobilePanel === 'users' ? 'win98-inset bg-win98-light-gray' : 'win98-button'}`}
-          >
-            <UsersIcon className="w-5 h-5 mx-auto mb-1" />
-            <span>Потребители ({filteredOnlineUsers.length})</span>
-          </button>
-          <button
-            onClick={() => setActiveMobilePanel('activeChats')}
-            className={`flex-1 p-2 text-center text-xs ${activeMobilePanel === 'activeChats' ? 'win98-inset bg-win98-light-gray' : 'win98-button'}`}
-          >
-            <MessageSquare className="w-5 h-5 mx-auto mb-1" />
-            <span>Чатове ({activeChats.size})</span>
-          </button>
-        </div>
+      {/* Mobile Panel Selector - Fixed under header */}
+      <div className="md:hidden fixed top-[130px] left-0 right-0 win98-panel border-t-2 border-win98-dark-gray flex z-40">
+        <button
+          onClick={() => setActiveMobilePanel('chat')}
+          className={`flex-1 p-2 text-center text-xs ${activeMobilePanel === 'chat' ? 'win98-inset bg-win98-light-gray' : 'win98-button'}`}
+        >
+          <MessageCircle className="w-5 h-5 mx-auto mb-1" />
+          <span>Чат</span>
+        </button>
+        <button
+          onClick={() => setActiveMobilePanel('users')}
+          className={`flex-1 p-2 text-center text-xs ${activeMobilePanel === 'users' ? 'win98-inset bg-win98-light-gray' : 'win98-button'}`}
+        >
+          <UsersIcon className="w-5 h-5 mx-auto mb-1" />
+          <span>Потребители ({filteredOnlineUsers.length})</span>
+        </button>
+        <button
+          onClick={() => setActiveMobilePanel('activeChats')}
+          className={`flex-1 p-2 text-center text-xs ${activeMobilePanel === 'activeChats' ? 'win98-inset bg-win98-light-gray' : 'win98-button'}`}
+        >
+          <MessageSquare className="w-5 h-5 mx-auto mb-1" />
+          <span>Чатове ({activeChats.size})</span>
+        </button>
+      </div>
+
+      {/* Main content with proper spacing for fixed header and tabs on mobile */}
+      <div className="md:flex h-[calc(100vh-240px)] mt-[190px] md:mt-0">
 
         {/* Chat Area */}
         <div className={`w-full md:flex-1 flex flex-col win98-window chat-window ${activeMobilePanel === 'chat' ? 'block' : 'hidden md:flex'}`}>
           {/* Messages - Extra padding on mobile for fixed input */}
-          <div className="flex-1 overflow-y-auto irc-chat-container p-2 pb-32 md:pb-4 bg-white">
+          <div className="flex-1 overflow-y-auto irc-chat-container p-2 pb-20 md:pb-4 bg-white">
             {messages.map((message) => {
               const timestamp = new Date(message.created_at);
               const day = String(timestamp.getDate()).padStart(2, '0');
@@ -1026,8 +1027,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Message Input - Fixed at bottom on mobile, above tabs */}
-          <div className="win98-panel p-3 border-t-2 border-win98-dark-gray md:relative fixed bottom-16 left-0 right-0 z-30">
+          {/* Message Input - Fixed at bottom on mobile */}
+          <div className="win98-panel p-3 border-t-2 border-win98-dark-gray md:relative fixed bottom-0 left-0 right-0 z-30">
             <form onSubmit={sendMessage} className="flex space-x-2">
               <input
                 type="text"
