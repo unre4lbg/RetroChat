@@ -71,6 +71,16 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const lastEventTimeRef = useRef<string>(new Date().toISOString());
 
+  // Refs to store current state values for use in realtime callbacks
+  const isDirectMessageRef = useRef(isDirectMessage);
+  const selectedUserRef = useRef(selectedUser);
+
+  // Update refs when state changes
+  useEffect(() => {
+    isDirectMessageRef.current = isDirectMessage;
+    selectedUserRef.current = selectedUser;
+  }, [isDirectMessage, selectedUser]);
+
   // ICQ sound effect function
   const playICQSound = () => {
     try {
@@ -210,18 +220,18 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
             
             const newMessage = event.payload as Message;
             
-            // STRICT message filtering for polling - same logic as real-time
+            // STRICT message filtering for polling - use refs for current values
             let shouldShowMessage = false;
-            
-            if (isDirectMessage && selectedUser) {
+
+            if (isDirectMessageRef.current && selectedUserRef.current) {
               // DIRECT MESSAGE VIEW: Show ONLY messages between current user and selected user
               const isFromSelectedToMe = (
-                newMessage.user_id === selectedUser.user_id && 
+                newMessage.user_id === selectedUserRef.current.user_id &&
                 newMessage.receiver_id === currentUser.user_id
               );
               const isFromMeToSelected = (
-                newMessage.user_id === currentUser.user_id && 
-                newMessage.receiver_id === selectedUser.user_id
+                newMessage.user_id === currentUser.user_id &&
+                newMessage.receiver_id === selectedUserRef.current.user_id
               );
               shouldShowMessage = isFromSelectedToMe || isFromMeToSelected;
             } else {
@@ -254,7 +264,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
               }
               
               setRealtimeStatus(`Message received via polling from ${newMessage.username}!`);
-            } else if (!isDirectMessage && newMessage.receiver_id === currentUser.user_id) {
+            } else if (!isDirectMessageRef.current && newMessage.receiver_id === currentUser.user_id) {
               // User is in lobby but received a private message - increment unread count
               const senderId = newMessage.user_id;
               
@@ -348,18 +358,18 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
             console.log(`[${currentUser.username}] Selected user:`, selectedUser?.username);
             
             let shouldShowMessage = false;
-            
-            if (isDirectMessage && selectedUser) {
+
+            if (isDirectMessageRef.current && selectedUserRef.current) {
               // DIRECT MESSAGE VIEW: Show only messages between current user and selected user
               const messageIsFromSelectedToMe = (
-                newMessage.user_id === selectedUser.user_id && 
+                newMessage.user_id === selectedUserRef.current.user_id &&
                 newMessage.receiver_id === currentUser.user_id
               );
               const messageIsFromMeToSelected = (
-                newMessage.user_id === currentUser.user_id && 
-                newMessage.receiver_id === selectedUser.user_id
+                newMessage.user_id === currentUser.user_id &&
+                newMessage.receiver_id === selectedUserRef.current.user_id
               );
-              
+
               shouldShowMessage = messageIsFromSelectedToMe || messageIsFromMeToSelected;
               
               console.log(`[${currentUser.username}] POLLING DIRECT CHAT FILTER:`, {
@@ -374,7 +384,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
                 shouldShow: shouldShowMessage,
                 messageUserId: newMessage.user_id,
                 messageReceiverId: newMessage.receiver_id,
-                selectedUserId: selectedUser.user_id,
+                selectedUserId: selectedUserRef.current?.user_id,
                 currentUserId: currentUser.user_id
               });
             } else {
@@ -432,7 +442,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
               }
 
               setRealtimeStatus(`Message received from ${payload.new.username}!`);
-            } else if (!isDirectMessage && newMessage.receiver_id === currentUser.user_id) {
+            } else if (!isDirectMessageRef.current && newMessage.receiver_id === currentUser.user_id) {
               console.log(`[${currentUser.username}] === INCREMENTING UNREAD COUNT (REAL-TIME) ===`);
               console.log(`[${currentUser.username}] Reason: Private message received while in lobby`);
               
@@ -464,8 +474,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
           setRealtimeStatus(`Connected - Messages (${currentUser.username})`);
           setSubscriptionDetails(prev => prev + ' | Messages: Connected');
           console.log(`[${currentUser.username}] Fetching initial messages...`);
-          if (isDirectMessage && selectedUser) {
-            fetchDirectMessages(selectedUser.user_id);
+          if (isDirectMessageRef.current && selectedUserRef.current) {
+            fetchDirectMessages(selectedUserRef.current.user_id);
           } else {
             fetchMessages();
           }
@@ -604,7 +614,22 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
         userChannelRef.current = null;
       }
     };
-  }, [currentUser, currentUser?.user_id, isDirectMessage, selectedUser]);
+  }, [currentUser, currentUser?.user_id]);
+
+  // Fetch messages when switching between lobby and direct messages
+  useEffect(() => {
+    if (!currentUser) return;
+
+    console.log(`[${currentUser.username}] === VIEW CHANGED ===`);
+    console.log(`[${currentUser.username}] isDirectMessage:`, isDirectMessage);
+    console.log(`[${currentUser.username}] selectedUser:`, selectedUser?.username);
+
+    if (isDirectMessage && selectedUser) {
+      fetchDirectMessages(selectedUser.user_id);
+    } else {
+      fetchMessages();
+    }
+  }, [currentUser, isDirectMessage, selectedUser]);
 
   useEffect(() => {
     scrollToBottom();
