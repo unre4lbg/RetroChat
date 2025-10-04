@@ -956,27 +956,23 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
         {/* Chat Area */}
         <div className={`flex-1 flex flex-col win98-window ${activeMobilePanel === 'chat' ? 'block' : 'hidden md:flex'}`}>
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto win98-inset bg-white p-2 space-y-2 pb-20 md:pb-4">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.user_id === currentUser.user_id ? 'justify-end' : 'justify-start'}`}
-              >
-                <div
-                  className={`max-w-xs lg:max-w-md px-2 py-1 win98-outset ${
-                    message.user_id === currentUser.user_id
-                      ? 'bg-win98-light-blue text-black'
-                      : 'bg-win98-gray text-black'
-                  }`}
-                >
-                  <div className="text-xs text-win98-dark-gray mb-1">
-                    {message.username} • {new Date(message.created_at).toLocaleTimeString()}
-                    {message.isOptimistic && ' • Изпраща се...'}
-                  </div>
-                  <div className="text-xs">{message.content}</div>
+          <div className="flex-1 overflow-y-auto irc-chat-container p-2 pb-20 md:pb-4">
+            {messages.map((message) => {
+              const timestamp = new Date(message.created_at);
+              const hours = String(timestamp.getHours()).padStart(2, '0');
+              const minutes = String(timestamp.getMinutes()).padStart(2, '0');
+              const seconds = String(timestamp.getSeconds()).padStart(2, '0');
+              const timeStr = `${hours}:${minutes}:${seconds}`;
+
+              return (
+                <div key={message.id} className="irc-message">
+                  <span className="irc-timestamp">({timeStr}) </span>
+                  <span className="irc-username">{message.username}:</span>
+                  <span className="irc-message-content"> {message.content}</span>
+                  {message.isOptimistic && <span className="irc-timestamp"> • Изпраща се...</span>}
                 </div>
-              </div>
-            ))}
+              );
+            })}
             <div ref={messagesEndRef} />
           </div>
 
@@ -1011,51 +1007,43 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
         <div className={`w-80 win98-window border-l-2 border-win98-dark-gray flex flex-col ${activeMobilePanel === 'users' ? 'block' : 'hidden md:flex'}`}>
           <div className="win98-titlebar">
             <span className="flex items-center">
-              <UsersIcon className="w-5 h-5 mr-2" />
-              Онлайн потребители ({filteredOnlineUsers.length})
+              <UsersIcon className="w-4 h-4 mr-1" />
+              Потребители на линия ({filteredOnlineUsers.length})
             </span>
           </div>
           <div className="win98-panel p-2">
+            <div className="text-xs mb-2 text-gray-700">
+              Двоен клик за директен чат
+            </div>
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Търси потребители..."
+              placeholder="Търси потребител..."
               className="w-full win98-input text-xs"
             />
           </div>
           <div className="flex-1 overflow-y-auto win98-inset bg-white p-2">
-            <div className="space-y-2">
+            <div className="space-y-1">
               {filteredOnlineUsers.map((user) => (
                 <div
                   key={user.id}
                   onDoubleClick={() => handleUserDoubleClick(user)}
-                  className={`p-2 cursor-pointer ${
-                    user.user_id === currentUser?.user_id
-                      ? 'win98-inset bg-win98-light-blue text-black'
-                      : selectedUser?.user_id === user.user_id
-                      ? 'win98-inset bg-icq-orange text-white'
-                      : 'win98-outset bg-win98-gray text-black hover:bg-win98-light-gray'
+                  className={`px-2 py-1 cursor-pointer flex items-center ${
+                    selectedUser?.user_id === user.user_id
+                      ? 'bg-blue-700 text-white'
+                      : 'hover:bg-blue-100'
                   }`}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <div className="online-dot"></div>
-                      <span className="text-xs font-bold">{user.username}</span>
-                      {user.user_id === currentUser?.user_id && (
-                        <span className="text-xs">(Ти)</span>
-                      )}
-                    </div>
-                    {unreadMessages.has(user.user_id) && (
-                      <div className="win98-outset bg-red-600 text-white text-xs w-4 h-4 flex items-center justify-center">
-                        {unreadMessages.get(user.user_id)}
-                      </div>
-                    )}
-                  </div>
-                  {user.user_id !== currentUser?.user_id && (
-                    <div className="text-xs text-win98-dark-gray mt-1">
-                      Двоен клик за частен чат
-                    </div>
+                  <div className="online-dot mr-2"></div>
+                  <span className="text-xs">{user.username}</span>
+                  {user.user_id === currentUser?.user_id && (
+                    <span className="text-xs ml-1">(вие)</span>
+                  )}
+                  {unreadMessages.has(user.user_id) && (
+                    <span className="ml-auto bg-red-600 text-white text-xs px-1 rounded">
+                      {unreadMessages.get(user.user_id)}
+                    </span>
                   )}
                 </div>
               ))}
@@ -1067,58 +1055,53 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
         <div className={`w-80 win98-window border-l-2 border-win98-dark-gray flex flex-col ${activeMobilePanel === 'activeChats' ? 'block' : 'hidden md:flex'}`}>
           <div className="win98-titlebar">
             <span className="flex items-center">
-              <MessageSquare className="w-5 h-5 mr-2" />
+              <MessageSquare className="w-4 h-4 mr-1" />
               Активни чатове ({activeChats.size})
             </span>
           </div>
+          <div className="win98-panel p-2">
+            <div className="text-xs text-gray-700">
+              Клик за отваряне на чат
+            </div>
+          </div>
           <div className="flex-1 overflow-y-auto win98-inset bg-white p-2">
-            <div className="space-y-2">
+            <div className="space-y-1">
               {Array.from(activeChats).map((userId) => {
                 const user = users.find(u => u.user_id === userId);
                 if (!user) return null;
-                
+
                 return (
                   <div
                     key={userId}
                     onClick={() => handleUserDoubleClick(user)}
-                    className={`p-2 cursor-pointer relative ${
+                    className={`px-2 py-1 cursor-pointer flex items-center ${
                       selectedUser?.user_id === userId
-                        ? 'win98-inset bg-icq-orange text-white'
-                        : 'win98-outset bg-win98-gray text-black hover:bg-win98-light-gray'
+                        ? 'bg-blue-700 text-white'
+                        : 'hover:bg-blue-100'
                     }`}
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <div className={`w-2 h-2 rounded-full ${
-                          onlineUserIds.has(userId) ? 'online-dot' : 'bg-win98-dark-gray'
-                        }`}></div>
-                        <span className="text-xs font-bold">{user.username}</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        {unreadMessages.has(userId) && (
-                          <div className="win98-outset bg-red-600 text-white text-xs w-4 h-4 flex items-center justify-center">
-                            {unreadMessages.get(userId)}
-                          </div>
-                        )}
-                        <button
-                          onClick={(e) => removeActiveChat(userId, e)}
-                          className="win98-button text-xs px-1"
-                        >
-                          ×
-                        </button>
-                      </div>
-                    </div>
-                    <div className="text-xs text-win98-dark-gray mt-1">
-                      {onlineUserIds.has(userId) ? 'Онлайн' : 'Офлайн'}
-                    </div>
+                    <div className={`mr-2 ${
+                      onlineUserIds.has(userId) ? 'online-dot' : 'w-2 h-2 rounded-full bg-gray-400'
+                    }`}></div>
+                    <span className="text-xs">{user.username}</span>
+                    {unreadMessages.has(userId) && (
+                      <span className="ml-auto bg-red-600 text-white text-xs px-1 rounded mr-1">
+                        {unreadMessages.get(userId)}
+                      </span>
+                    )}
+                    <button
+                      onClick={(e) => removeActiveChat(userId, e)}
+                      className="ml-auto text-xs hover:bg-red-500 hover:text-white px-1"
+                    >
+                      ×
+                    </button>
                   </div>
                 );
               })}
               {activeChats.size === 0 && (
-                <div className="text-center text-win98-dark-gray py-8">
-                  <MessageSquare className="w-12 h-12 mx-auto mb-2" />
+                <div className="text-center text-gray-500 py-8">
+                  <MessageSquare className="w-8 h-8 mx-auto mb-2" />
                   <p className="text-xs">Няма активни чатове</p>
-                  <p className="text-xs mt-1">Двоен клик върху потребител за чат</p>
                 </div>
               )}
             </div>
