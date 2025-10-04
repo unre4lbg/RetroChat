@@ -241,11 +241,12 @@ body {
 /* IRC Chat Message Styles */
 .irc-message {
   font-family: 'Courier New', 'Courier', monospace;
-  font-size: 12px;
+  font-size: 13px;
   padding: 2px 4px;
   margin: 0;
   white-space: pre-wrap;
   word-wrap: break-word;
+  line-height: 1.4;
 }
 
 .irc-timestamp {
@@ -258,13 +259,18 @@ body {
   color: #000000;
 }
 
+.irc-username-own {
+  font-weight: bold;
+  color: #0000CC;
+}
+
 .irc-message-content {
   color: #000000;
 }
 
 /* IRC Chat Container */
 .irc-chat-container {
-  background: #E8E4D8;
+  background: #FFFFFF;
   font-family: 'Courier New', 'Courier', monospace;
   overflow-y: auto;
 }

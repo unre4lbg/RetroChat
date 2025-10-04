@@ -959,15 +959,20 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
           <div className="flex-1 overflow-y-auto irc-chat-container p-2 pb-20 md:pb-4">
             {messages.map((message) => {
               const timestamp = new Date(message.created_at);
+              const day = String(timestamp.getDate()).padStart(2, '0');
+              const month = String(timestamp.getMonth() + 1).padStart(2, '0');
+              const year = timestamp.getFullYear();
               const hours = String(timestamp.getHours()).padStart(2, '0');
               const minutes = String(timestamp.getMinutes()).padStart(2, '0');
               const seconds = String(timestamp.getSeconds()).padStart(2, '0');
-              const timeStr = `${hours}:${minutes}:${seconds}`;
+              const timeStr = `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
+
+              const isOwnMessage = message.user_id === currentUser.user_id;
 
               return (
                 <div key={message.id} className="irc-message">
                   <span className="irc-timestamp">({timeStr}) </span>
-                  <span className="irc-username">{message.username}:</span>
+                  <span className={isOwnMessage ? "irc-username-own" : "irc-username"}>{message.username}:</span>
                   <span className="irc-message-content"> {message.content}</span>
                   {message.isOptimistic && <span className="irc-timestamp"> • Изпраща се...</span>}
                 </div>
