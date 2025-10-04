@@ -996,9 +996,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
         </div>
 
         {/* Chat Area */}
-        <div className={`flex-1 flex flex-col win98-window ${activeMobilePanel === 'chat' ? 'block' : 'hidden md:flex'}`}>
+        <div className={`flex-1 flex flex-col win98-window chat-window ${activeMobilePanel === 'chat' ? 'block' : 'hidden md:flex'}`}>
           {/* Messages - Extra padding on mobile for fixed input */}
-          <div className="flex-1 overflow-y-auto irc-chat-container p-2 pb-32 md:pb-4">
+          <div className="flex-1 overflow-y-auto irc-chat-container p-2 pb-32 md:pb-4 bg-white">
             {messages.map((message) => {
               const timestamp = new Date(message.created_at);
               const day = String(timestamp.getDate()).padStart(2, '0');
