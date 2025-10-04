@@ -969,24 +969,24 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
       </div>
 
       {/* Mobile Panel Selector - Fixed under header */}
-      <div className="md:hidden fixed top-[38px] left-0 right-0 win98-panel flex z-40">
+      <div className="md:hidden fixed top-[38px] left-0 right-0 win98-panel flex z-40 border-t-0">
         <button
           onClick={() => setActiveMobilePanel('chat')}
-          className={`flex-1 p-2 text-center text-xs ${activeMobilePanel === 'chat' ? 'win98-inset bg-win98-light-gray' : 'win98-button'}`}
+          className={`flex-1 py-2 px-1 text-center text-xs ${activeMobilePanel === 'chat' ? 'win98-inset bg-win98-light-gray' : 'win98-button'}`}
         >
           <MessageCircle className="w-5 h-5 mx-auto mb-1" />
           <span>Чат</span>
         </button>
         <button
           onClick={() => setActiveMobilePanel('users')}
-          className={`flex-1 p-2 text-center text-xs ${activeMobilePanel === 'users' ? 'win98-inset bg-win98-light-gray' : 'win98-button'}`}
+          className={`flex-1 py-2 px-1 text-center text-xs ${activeMobilePanel === 'users' ? 'win98-inset bg-win98-light-gray' : 'win98-button'}`}
         >
           <UsersIcon className="w-5 h-5 mx-auto mb-1" />
           <span>Потребители ({filteredOnlineUsers.length})</span>
         </button>
         <button
           onClick={() => setActiveMobilePanel('activeChats')}
-          className={`flex-1 p-2 text-center text-xs ${activeMobilePanel === 'activeChats' ? 'win98-inset bg-win98-light-gray' : 'win98-button'}`}
+          className={`flex-1 py-2 px-1 text-center text-xs ${activeMobilePanel === 'activeChats' ? 'win98-inset bg-win98-light-gray' : 'win98-button'}`}
         >
           <MessageSquare className="w-5 h-5 mx-auto mb-1" />
           <span>Чатове ({activeChats.size})</span>
