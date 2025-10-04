@@ -846,6 +846,18 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
 
       console.log(`[${currentUser.username}] Message sent successfully:`, data);
       setRealtimeStatus(`Message sent successfully!`);
+
+      // Immediately replace optimistic message with real one as fallback
+      // (realtime subscription should also handle this, but this ensures it happens)
+      if (shouldAddOptimistic && data) {
+        setMessages(prev => {
+          const filtered = prev.filter(msg => msg.id !== tempMessage.id);
+          return [...filtered, data as Message].sort((a, b) =>
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          );
+        });
+      }
+
       setNewMessage('');
       
     } catch (error) {
