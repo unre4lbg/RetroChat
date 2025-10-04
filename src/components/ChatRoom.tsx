@@ -860,7 +860,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
   }
 
   return (
-    <div className="min-h-screen xp-login-bg font-win98">
+    <div className="min-h-screen xp-login-bg font-win98 p-5">
       {/* Header */}
       <div className="win98-window">
         <div className="win98-titlebar flex items-center justify-between px-2 py-1">
@@ -927,7 +927,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
         </div>
       </div>
 
-      <div className="flex h-[calc(100vh-120px)]">
+      <div className="flex h-[calc(100vh-160px)]">
         {/* Mobile Panel Selector */}
         <div className="md:hidden fixed bottom-0 left-0 right-0 win98-panel border-t-2 border-win98-dark-gray flex">
           <button
