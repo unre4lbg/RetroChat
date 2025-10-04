@@ -1003,8 +1003,11 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
           </div>
         </div>
 
+        {/* Right Sidebar with Both Panels */}
+        <div className={`w-80 flex flex-col ${activeMobilePanel === 'users' || activeMobilePanel === 'activeChats' ? 'block' : 'hidden md:flex'}`}>
+
         {/* Online Users Panel */}
-        <div className={`w-80 win98-window border-l-2 border-win98-dark-gray flex flex-col ${activeMobilePanel === 'users' ? 'block' : 'hidden md:flex'}`}>
+        <div className="win98-window border-l-2 border-win98-dark-gray flex flex-col flex-1 mb-2">
           <div className="win98-titlebar">
             <span className="flex items-center">
               <UsersIcon className="w-4 h-4 mr-1" />
@@ -1052,7 +1055,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
         </div>
 
         {/* Active Chats Panel */}
-        <div className={`w-80 win98-window border-l-2 border-win98-dark-gray flex flex-col ${activeMobilePanel === 'activeChats' ? 'block' : 'hidden md:flex'}`}>
+        <div className="win98-window border-l-2 border-win98-dark-gray flex flex-col flex-1">
           <div className="win98-titlebar">
             <span className="flex items-center">
               <MessageSquare className="w-4 h-4 mr-1" />
@@ -1106,6 +1109,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
               )}
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>
