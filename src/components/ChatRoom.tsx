@@ -929,8 +929,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
             </button>
           </div>
         </div>
-        
-        <div className="win98-panel p-2">
+
+        <div className="win98-panel p-2 hidden md:block">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             {isDirectMessage && selectedUser ? (
@@ -969,7 +969,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
       </div>
 
       {/* Mobile Panel Selector - Fixed under header */}
-      <div className="md:hidden fixed top-[130px] left-0 right-0 win98-panel border-t-2 border-win98-dark-gray flex z-40">
+      <div className="md:hidden fixed top-[38px] left-0 right-0 win98-panel border-t-2 border-win98-dark-gray flex z-40">
         <button
           onClick={() => setActiveMobilePanel('chat')}
           className={`flex-1 p-2 text-center text-xs ${activeMobilePanel === 'chat' ? 'win98-inset bg-win98-light-gray' : 'win98-button'}`}
@@ -994,7 +994,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
       </div>
 
       {/* Main content with proper spacing for fixed header and tabs on mobile */}
-      <div className="md:flex h-[calc(100vh-240px)] mt-[190px] md:mt-0">
+      <div className="md:flex h-[calc(100vh-100px)] mt-[100px] md:mt-0">
 
         {/* Chat Area */}
         <div className={`w-full md:flex-1 flex flex-col win98-window chat-window ${activeMobilePanel === 'chat' ? 'block' : 'hidden md:flex'}`}>
