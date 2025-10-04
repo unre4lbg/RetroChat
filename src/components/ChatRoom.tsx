@@ -903,7 +903,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
   return (
     <div className="min-h-screen xp-login-bg font-win98 md:p-5 p-0 md:overflow-auto overflow-hidden">
       {/* Header - Fixed on mobile */}
-      <div className="win98-window md:relative fixed top-0 left-0 right-0 z-50 md:m-0 m-0">
+      <div className="win98-window md:relative fixed top-0 left-0 right-0 z-50 md:m-0 m-0 border-b-0 md:border-b-2">
         <div className="win98-titlebar flex items-center justify-between px-2 py-1">
           <div className="flex items-center">
             <Terminal className="h-4 w-4 mr-1" />
@@ -930,7 +930,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
           </div>
         </div>
 
-        <div className="win98-panel p-2 hidden md:block">
+        <div className="win98-panel p-2 hidden md:block md:mb-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             {isDirectMessage && selectedUser ? (
@@ -969,7 +969,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
       </div>
 
       {/* Mobile Panel Selector - Fixed under header */}
-      <div className="md:hidden fixed top-[38px] left-0 right-0 win98-panel flex z-40 border-t-0">
+      <div className="md:hidden fixed top-[38px] left-0 right-0 win98-panel flex z-40 border-t-2 border-win98-light-gray">
         <button
           onClick={() => setActiveMobilePanel('chat')}
           className={`flex-1 py-2 px-1 text-center text-xs ${activeMobilePanel === 'chat' ? 'win98-inset bg-win98-light-gray' : 'win98-button'}`}
