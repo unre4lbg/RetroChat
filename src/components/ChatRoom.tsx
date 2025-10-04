@@ -711,11 +711,17 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
       
       if (publicMessages && privateMessages) {
         // Combine and sort all messages
-        const allMessages = [...publicMessages, ...privateMessages].sort((a, b) => 
+        const allMessages = [...publicMessages, ...privateMessages].sort((a, b) =>
           new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
         );
         setMessages(allMessages);
-        lastEventTimeRef.current = new Date().toISOString();
+
+        // Update lastEventTimeRef to the newest message's timestamp
+        if (allMessages.length > 0) {
+          const newestMessage = allMessages[allMessages.length - 1]; // Last message (newest due to ascending order)
+          lastEventTimeRef.current = newestMessage.created_at;
+          console.log(`[${currentUser.username}] Updated lastEventTimeRef from fetchMessages to:`, lastEventTimeRef.current);
+        }
       }
     } catch (error) {
       console.error('Error in fetchMessages:', error);
