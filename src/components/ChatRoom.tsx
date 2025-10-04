@@ -1059,7 +1059,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
           {/* Show users panel only on Users tab in mobile, always visible on desktop */}
           <div className={`${activeMobilePanel === 'users' ? 'flex flex-col h-full' : 'hidden'} md:block md:h-auto`}>
             {/* Online Users Panel */}
-            <div className="win98-window md:border-l-2 border-win98-dark-gray flex flex-col flex-1 mb-2 h-full md:h-auto">
+            <div className={`flex flex-col flex-1 mb-2 h-full md:h-auto ${activeMobilePanel === 'users' ? '' : 'md:win98-window md:border-l-2 border-win98-dark-gray'}`}>
           <div className="win98-titlebar">
             <span className="flex items-center">
               <UsersIcon className="w-4 h-4 mr-1" />
@@ -1110,7 +1110,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
           {/* Show active chats panel only on Chats tab in mobile, always visible on desktop */}
           <div className={`${activeMobilePanel === 'activeChats' ? 'flex flex-col h-full' : 'hidden'} md:block md:h-auto`}>
             {/* Active Chats Panel */}
-            <div className="win98-window md:border-l-2 border-win98-dark-gray flex flex-col flex-1 h-full md:h-auto">
+            <div className={`flex flex-col flex-1 h-full md:h-auto ${activeMobilePanel === 'activeChats' ? '' : 'md:win98-window md:border-l-2 border-win98-dark-gray'}`}>
           <div className="win98-titlebar">
             <span className="flex items-center">
               <MessageSquare className="w-4 h-4 mr-1" />
