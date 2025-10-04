@@ -965,16 +965,19 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
               const hours = String(timestamp.getHours()).padStart(2, '0');
               const minutes = String(timestamp.getMinutes()).padStart(2, '0');
               const seconds = String(timestamp.getSeconds()).padStart(2, '0');
-              const timeStr = `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
+              const dateStr = `${day}.${month}.${year}`;
+              const timeStr = `${hours}:${minutes}:${seconds}`;
 
               const isOwnMessage = message.user_id === currentUser.user_id;
 
               return (
-                <div key={message.id} className="irc-message">
-                  <span className="irc-timestamp">({timeStr}) </span>
-                  <span className={isOwnMessage ? "irc-username-own" : "irc-username"}>{message.username}:</span>
-                  <span className="irc-message-content"> {message.content}</span>
-                  {message.isOptimistic && <span className="irc-timestamp"> • Изпраща се...</span>}
+                <div key={message.id} className="irc-message mb-1">
+                  <div>
+                    <span className={isOwnMessage ? "irc-username-own" : "irc-username"}>{message.username}</span>
+                    <span className="irc-message-content"> {message.content}</span>
+                    {message.isOptimistic && <span className="irc-timestamp"> • Изпраща се...</span>}
+                  </div>
+                  <div className="irc-timestamp text-xs ml-4">{dateStr} {timeStr}</div>
                 </div>
               );
             })}
@@ -982,7 +985,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
           </div>
 
           {/* Message Input */}
-          <div className="win98-panel p-2 border-t-2 border-win98-dark-gray">
+          <div className="win98-panel p-3 border-t-2 border-win98-dark-gray">
             <form onSubmit={sendMessage} className="flex space-x-2">
               <input
                 type="text"
@@ -993,15 +996,15 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
                     ? `Съобщение до ${selectedUser.username}...`
                     : "Напиши съобщение..."
                 }
-                className="flex-1 win98-input text-xs"
+                className="flex-1 win98-input px-3 py-2 text-sm"
                 disabled={!currentUser}
               />
               <button
                 type="submit"
                 disabled={!newMessage.trim() || !currentUser}
-                className="win98-button py-1 px-2 text-xs font-bold text-black disabled:opacity-50 flex items-center space-x-1"
+                className="win98-button py-2 px-4 text-sm font-bold text-black disabled:opacity-50 flex items-center space-x-2"
               >
-                <Send className="w-4 h-4" />
+                <Send className="w-4 h-4 text-blue-600" />
                 <span>Изпрати</span>
               </button>
             </form>
