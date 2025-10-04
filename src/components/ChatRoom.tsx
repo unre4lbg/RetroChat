@@ -194,31 +194,29 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
     if (!currentUser) return;
     
     try {
-      console.log(`[${currentUser.username}] === POLLING FOR NEW EVENTS ===`);
-      
-      const { data: events, error } = await supabase
-        .from('realtime_events')
+      console.log(`[${currentUser.username}] === POLLING FOR NEW MESSAGES ===`);
+      console.log(`[${currentUser.username}] Polling since:`, lastEventTimeRef.current);
+
+      const { data: newMessages, error } = await supabase
+        .from('messages')
         .select('*')
-        .eq('table_name', 'messages')
         .gt('created_at', lastEventTimeRef.current)
         .order('created_at', { ascending: true });
-      
+
       if (error) {
         console.error(`[${currentUser.username}] Polling error:`, error);
         return;
       }
-      
-      if (events && events.length > 0) {
-        console.log(`[${currentUser.username}] Found ${events.length} new events via polling`);
-        
-        events.forEach(event => {
-          if (event.event_type === 'INSERT' && event.payload) {
-            console.log(`[${currentUser.username}] === POLLING MESSAGE RECEIVED ===`);
-            console.log(`[${currentUser.username}] Event payload:`, event.payload);
-            console.log(`[${currentUser.username}] POLLING receiver_id VALUE:`, (event.payload as Message).receiver_id);
-            console.log(`[${currentUser.username}] POLLING receiver_id TYPE:`, typeof (event.payload as Message).receiver_id);
-            
-            const newMessage = event.payload as Message;
+
+      if (newMessages && newMessages.length > 0) {
+        console.log(`[${currentUser.username}] Found ${newMessages.length} new messages via polling`);
+
+        newMessages.forEach(newMessage => {
+          console.log(`[${currentUser.username}] === POLLING MESSAGE RECEIVED ===`);
+          console.log(`[${currentUser.username}] Message:`, newMessage);
+          console.log(`[${currentUser.username}] POLLING receiver_id VALUE:`, newMessage.receiver_id);
+          console.log(`[${currentUser.username}] POLLING receiver_id TYPE:`, typeof newMessage.receiver_id);
+
             
             // STRICT message filtering for polling - use refs for current values
             let shouldShowMessage = false;
@@ -280,11 +278,11 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
                 return newMap;
               });
             }
-          }
         });
-        
-        // Update last event time
-        lastEventTimeRef.current = events[events.length - 1].created_at;
+
+        // Update last event time to the newest message
+        lastEventTimeRef.current = newMessages[newMessages.length - 1].created_at;
+        console.log(`[${currentUser.username}] Updated lastEventTimeRef from polling to:`, lastEventTimeRef.current);
       }
     } catch (error) {
       console.error(`[${currentUser.username}] Polling error:`, error);
