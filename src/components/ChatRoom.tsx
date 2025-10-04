@@ -901,7 +901,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
   }
 
   return (
-    <div className="min-h-screen xp-login-bg font-win98 md:p-5 p-0 overflow-hidden">
+    <div className="min-h-screen xp-login-bg font-win98 md:p-5 p-0 md:overflow-auto overflow-hidden">
       {/* Header - Fixed on mobile */}
       <div className="win98-window md:relative fixed top-0 left-0 right-0 z-50 md:m-0 m-0">
         <div className="win98-titlebar flex items-center justify-between px-2 py-1">
@@ -994,7 +994,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
       </div>
 
       {/* Main content with proper spacing for fixed header and tabs on mobile */}
-      <div className="md:flex h-[calc(100vh-100px)] mt-[100px] md:mt-0">
+      <div className="md:flex h-[calc(100vh-100px)] mt-[100px] md:mt-0 overflow-hidden">
 
         {/* Chat Area */}
         <div className={`w-full md:flex-1 flex flex-col win98-window chat-window ${activeMobilePanel === 'chat' ? 'block' : 'hidden md:flex'}`}>
