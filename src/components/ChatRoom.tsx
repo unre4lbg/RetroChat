@@ -969,7 +969,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
       </div>
 
       {/* Main content with proper spacing for fixed header on mobile */}
-      <div className="flex h-[calc(100vh-160px)] mt-[130px] md:mt-0">
+      <div className="md:flex h-[calc(100vh-160px)] mt-[130px] md:mt-0">
         {/* Mobile Panel Selector - Fixed at bottom */}
         <div className="md:hidden fixed bottom-0 left-0 right-0 win98-panel border-t-2 border-win98-dark-gray flex z-40">
           <button
@@ -996,7 +996,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
         </div>
 
         {/* Chat Area */}
-        <div className={`flex-1 flex flex-col win98-window chat-window ${activeMobilePanel === 'chat' ? 'block' : 'hidden md:flex'}`}>
+        <div className={`w-full md:flex-1 flex flex-col win98-window chat-window ${activeMobilePanel === 'chat' ? 'block' : 'hidden md:flex'}`}>
           {/* Messages - Extra padding on mobile for fixed input */}
           <div className="flex-1 overflow-y-auto irc-chat-container p-2 pb-32 md:pb-4 bg-white">
             {messages.map((message) => {
