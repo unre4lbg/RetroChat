@@ -974,7 +974,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
       </div>
 
       {/* Mobile Panel Selector - Fixed under header */}
-      <div className="md:hidden fixed top-[38px] left-0 right-0 win98-panel flex z-40 border-t-2 border-win98-light-gray mt-2">
+      <div className="md:hidden fixed top-[38px] left-0 right-0 win98-panel flex z-40 border-t-2 border-win98-light-gray mt-3">
         <button
           onClick={() => setActiveMobilePanel('chat')}
           className={`flex-1 py-2 px-1 text-center text-xs ${activeMobilePanel === 'chat' ? 'win98-inset bg-win98-light-gray' : 'win98-button'}`}
