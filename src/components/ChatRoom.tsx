@@ -1019,7 +1019,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
               const isOwnMessage = message.user_id === currentUser.user_id;
 
               return (
-                <div key={message.id} className="irc-message mb-2">
+                <div key={message.id} className="irc-message mb-0">
                   <div>
                     <span className={isOwnMessage ? "irc-username-own" : "irc-username"}>{message.username}</span>
                     <span className="irc-message-content"> {message.content}</span>
