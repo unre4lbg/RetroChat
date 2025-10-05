@@ -1071,8 +1071,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
               Потребители на линия ({filteredOnlineUsers.length})
             </span>
           </div>
-          <div className="win98-panel p-1">
-            <div className="text-xs mb-1 text-gray-700">
+          <div className="win98-panel p-2">
+            <div className="text-xs mb-2 text-gray-700">
               Двоен клик за директен чат
             </div>
             <input
