@@ -130,10 +130,10 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
   // Handle user double click for direct messaging
   const handleUserDoubleClick = (user: UserProfile) => {
     if (user.user_id === currentUser?.user_id) return; // Can't message yourself
-    
+
     // Add user to active chats when starting a conversation
     setActiveChats(prev => new Set([...prev, user.user_id]));
-    
+
     setSelectedUser(user);
     setIsDirectMessage(true);
     setMessages([]); // Clear current messages
@@ -143,6 +143,10 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
       newMap.delete(user.user_id);
       return newMap;
     });
+
+    // Switch to chat panel on mobile when opening direct message
+    setActiveMobilePanel('chat');
+
     fetchDirectMessages(user.user_id);
   };
 
@@ -930,7 +934,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
           </div>
         </div>
 
-        <div className="win98-panel p-2 hidden md:block md:mb-0">
+        <div className="win98-panel p-2 md:mb-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             {isDirectMessage && selectedUser ? (
@@ -939,7 +943,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
                 className="win98-button py-1 px-2 text-xs font-bold text-black flex items-center"
               >
                 <ArrowLeft className="w-4 h-4" />
-                <span>Назад към лобито</span>
+                <span className="hidden md:inline">Назад към лобито</span>
+                <span className="md:hidden">Назад</span>
               </button>
             ) : (
               <div className="flex items-center space-x-2">
@@ -948,10 +953,10 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
               </div>
             )}
           </div>
-          
+
           <div className="flex items-center space-x-4">
-            <span className="text-xs text-black">
-              {isDirectMessage && selectedUser 
+            <span className="text-xs text-black hidden md:inline">
+              {isDirectMessage && selectedUser
                 ? `Чат с ${selectedUser.username}`
                 : `Добре дошъл, ${currentUser.username}`
               }
@@ -961,7 +966,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
               className="win98-button py-1 px-2 text-xs font-bold text-black flex items-center"
             >
               <LogOut className="w-4 h-4" />
-              <span>Изход</span>
+              <span className="hidden md:inline">Изход</span>
             </button>
           </div>
         </div>
