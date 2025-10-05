@@ -999,7 +999,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
       </div>
 
       {/* Main content with proper spacing for fixed header and tabs on mobile */}
-      <div className="md:flex md:h-[calc(100vh-100px)] h-[calc(100vh-90px)] mt-[110px] md:mt-0">
+      <div className="md:flex md:h-[calc(100vh-100px)] h-[calc(100vh-90px)] mt-[86px] md:mt-0">
 
         {/* Chat Area */}
         <div className={`w-full md:flex-1 flex flex-col win98-window chat-window h-full ${activeMobilePanel === 'chat' ? 'block' : 'hidden md:flex'}`}>
