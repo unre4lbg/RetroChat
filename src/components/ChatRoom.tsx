@@ -1033,7 +1033,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
           </div>
 
           {/* Message Input - Fixed at bottom on mobile */}
-          <div className="win98-panel p-3 border-t-2 border-win98-dark-gray md:relative fixed bottom-0 left-0 right-0 z-30">
+          <div className="win98-panel p-3 border-t-2 border-win98-dark-gray md:relative sticky bottom-0 z-30">
             <form onSubmit={sendMessage} className="flex space-x-2">
               <input
                 type="text"
