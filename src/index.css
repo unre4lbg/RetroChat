@@ -268,7 +268,7 @@ body {
 
 .irc-username-own {
   font-weight: bold;
-  color: #008000 !important; /* Ярко зелено */
+  color: #0000CC !important; /* Тъмно син цвят за собствените съобщения*/
 }
 
 .irc-message-content {
