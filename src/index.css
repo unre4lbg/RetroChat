@@ -268,7 +268,7 @@ body {
 
 .irc-username-own {
   font-weight: bold;
-  color: ##964B00;
+  color: ##964B00 !important;
 }
 
 .irc-message-content {
