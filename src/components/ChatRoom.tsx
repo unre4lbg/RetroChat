@@ -1185,7 +1185,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
         </div>
       </div>
     </div>
-    useEffect(() => {
+    ; useEffect(() => {
   // Function to set the actual viewport height
   const setVH = () => {
     const vh = window.innerHeight * 0.01;
@@ -1203,6 +1203,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
     window.removeEventListener('resize', setVH);
     window.removeEventListener('orientationchange', setVH);
   };
+},
   );
 };
 
