@@ -351,3 +351,28 @@ body {
   height: calc(100vh - var(--safe-area-inset-top) - var(--safe-area-inset-bottom) - 120px);
   height: calc(-webkit-fill-available - var(--safe-area-inset-top) - var(--safe-area-inset-bottom) - 120px);
 }
+/* Mobile safe area utilities */
+.pb-safe-bottom {
+  padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+}
+
+.pt-safe-top {
+  padding-top: calc(1rem + env(safe-area-inset-top));
+}
+
+/* Fix mobile browser viewport height issues */
+@supports (-webkit-touch-callout: none) {
+  .mobile-viewport-fix {
+    height: -webkit-fill-available !important;
+  }
+}
+
+/* Ensure mobile bottom nav stays above browser UI */
+@media (max-width: 768px) {
+  .mobile-bottom-nav {
+    position: relative;
+    bottom: 0;
+    padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+    z-index: 50;
+  }
+}
