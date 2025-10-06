@@ -64,6 +64,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
   }, [activeChats, currentUser]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   // Refs to store channel instances for proper cleanup
   const messageChannelRef = useRef<RealtimeChannel | null>(null);
@@ -638,7 +639,14 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
   }, [messages]);
 
   const scrollToBottom = () => {
+    if (scrollRef.current) {
+    // Използваме scrollHeight, за да получим височината на цялото съдържание
+    // и задаваме тази стойност на scrollTop (скролираме до дъното)
+    scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  } else {
+    // Резервен вариант (fallback)
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   const getCurrentUser = async () => {
@@ -905,7 +913,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
   }
 
   return (
-    <div className="min-h-screen xp-login-bg font-win98 flex flex-col md:p-5 md:overflow-auto">
+    <div className="h-screen xp-login-bg font-win98 flex flex-col md:p-5 md:overflow-auto">
       {/* Header - Fixed on mobile */}
       <div className="win98-window md:relative z-50 border-b-0 md:border-b-2">
         <div className="win98-titlebar flex items-center justify-between px-2 py-1">
@@ -1004,7 +1012,10 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
         {/* Chat Area */}
         <div className={`w-full md:flex-1 flex flex-col win98-window chat-window h-full ${activeMobilePanel === 'chat' ? 'block' : 'hidden md:flex'}`}>
           {/* Messages - Extra padding on mobile for fixed input */}
-          <div className="flex-1 overflow-y-auto irc-chat-container p-2 pb-20 md:pb-4 bg-white">
+          <div
+            ref={scrollRef}
+            className="flex-1 overflow-y-auto irc-chat-container p-2 pb-20 md:pb-4 bg-white"
+            >
             {messages.map((message) => {
               const timestamp = new Date(message.created_at);
               const day = String(timestamp.getDate()).padStart(2, '0');
@@ -1033,7 +1044,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
           </div>
 
           {/* Message Input - Fixed at bottom on mobile */}
-          <div className="win98-panel p-3 border-t-2 border-win98-dark-gray>
+          <div className="win98-panel p-3 border-t-2 border-win98-dark-gray">
             <form onSubmit={sendMessage} className="flex space-x-2">
               <input
                 type="text"
