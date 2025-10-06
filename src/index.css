@@ -293,8 +293,6 @@ body {
 }
 
 .irc-username,
-.irc-username-own {
-  color: #0000EE !important; /* Classic blue for usernames */
 }
 
 .irc-message-content {
