@@ -291,10 +291,6 @@ body {
 .irc-message {
   background: transparent;
 }
-
-.irc-username,
-}
-
 .irc-message-content {
   color: #000000 !important; /* Black text for messages */
 }
