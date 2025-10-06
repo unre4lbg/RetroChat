@@ -64,6 +64,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
   }, [activeChats, currentUser]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   // Refs to store channel instances for proper cleanup
   const messageChannelRef = useRef<RealtimeChannel | null>(null);
@@ -638,7 +639,14 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
   }, [messages]);
 
   const scrollToBottom = () => {
+    if (scrollRef.current) {
+    // Използваме scrollHeight, за да получим височината на цялото съдържание
+    // и задаваме тази стойност на scrollTop (скролираме до дъното)
+    scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  } else {
+    // Резервен вариант (fallback)
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   const getCurrentUser = async () => {
@@ -905,9 +913,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
   }
 
   return (
-    <div className="min-h-screen xp-login-bg font-win98 md:p-5 md:overflow-auto overflow-hidden">
+    <div className="h-screen xp-login-bg font-win98 flex flex-col md:p-5 md:overflow-auto">
       {/* Header - Fixed on mobile */}
-      <div className="win98-window md:relative fixed top-0 left-0 right-0 z-50 border-b-0 md:border-b-2">
+      <div className="win98-window md:relative z-50 border-b-0 md:border-b-2">
         <div className="win98-titlebar flex items-center justify-between px-2 py-1">
           <div className="flex items-center">
             <Terminal className="h-4 w-4 mr-1" />
@@ -974,7 +982,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
       </div>
 
       {/* Mobile Panel Selector - Fixed under header */}
-      <div className="md:hidden fixed top-[38px] left-0 right-0 win98-panel flex z-40 border-t-2 border-win98-light-gray mt-7">
+      <div className="md:hidden  win98-panel flex z-40 border-t-2 border-win98-light-gray">
         <button
           onClick={() => setActiveMobilePanel('chat')}
           className={`flex-1 py-2 px-1 text-center text-xs ${activeMobilePanel === 'chat' ? 'win98-inset bg-win98-light-gray' : 'win98-button'}`}
@@ -999,12 +1007,15 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
       </div>
 
       {/* Main content with proper spacing for fixed header and tabs on mobile */}
-      <div className="md:flex md:h-[calc(100vh-100px)] h-[calc(100vh-90px)] mt-[86px] md:mt-0">
+      <div className="md:flex flex-1 md:mt-0 overflow-hidden">
 
         {/* Chat Area */}
         <div className={`w-full md:flex-1 flex flex-col win98-window chat-window h-full ${activeMobilePanel === 'chat' ? 'block' : 'hidden md:flex'}`}>
           {/* Messages - Extra padding on mobile for fixed input */}
-          <div className="flex-1 overflow-y-auto irc-chat-container p-2 pb-20 md:pb-4 bg-white" style={{maxHeight: 'calc(100% - 60px)'}}>
+          <div
+            ref={scrollRef}
+            className="flex-1 overflow-y-auto irc-chat-container p-2 pb-20 md:pb-4 bg-white"
+            >
             {messages.map((message) => {
               const timestamp = new Date(message.created_at);
               const day = String(timestamp.getDate()).padStart(2, '0');
@@ -1033,7 +1044,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
           </div>
 
           {/* Message Input - Fixed at bottom on mobile */}
-          <div className="win98-panel p-3 border-t-2 border-win98-dark-gray md:relative fixed bottom-0 left-0 right-0 z-30">
+          <div className="win98-panel p-3 border-t-2 border-win98-dark-gray">
             <form onSubmit={sendMessage} className="flex space-x-2">
               <input
                 type="text"
