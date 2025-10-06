@@ -913,8 +913,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
   }
 
   return (
-    <div className="xp-login-bg font-win98 flex flex-col md:p-5 md:overflow-auto">
+    <div className="h-screen xp-login-bg font-win98 flex flex-col md:p-5 md:overflow-auto">
       {/* Header - Fixed on mobile */}
+      <div className="win98-window md:relative z-50 border-b-0 md:border-b-2">
         <div className="win98-titlebar flex items-center justify-between px-2 py-1">
           <div className="flex items-center">
             <Terminal className="h-4 w-4 mr-1" />
@@ -981,7 +982,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
       </div>
 
       {/* Mobile Panel Selector - Fixed under header */}
-      <div className="md:hidden flex flex-col h-screen bg-gray-100" style={{height: 'calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom))}}">
+      <div className="md:hidden  win98-panel flex z-40 border-t-2 border-win98-light-gray">
         <button
           onClick={() => setActiveMobilePanel('chat')}
           className={`flex-1 py-2 px-1 text-center text-xs ${activeMobilePanel === 'chat' ? 'win98-inset bg-win98-light-gray' : 'win98-button'}`}
@@ -1013,7 +1014,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
           {/* Messages - Extra padding on mobile for fixed input */}
           <div
             ref={scrollRef}
-            className="flex-1 overflow-y-auto irc-chat-container p-2 pb-32 md:pb-4 bg-white"
+            className="flex-1 overflow-y-auto irc-chat-container p-2 pb-20 md:pb-4 bg-white"
             >
             {messages.map((message) => {
               const timestamp = new Date(message.created_at);
@@ -1043,7 +1044,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
           </div>
 
           {/* Message Input - Fixed at bottom on mobile */}
-          <div className="win98-panel p-3 border-t-2 border-win98-dark-gray fixed bottom-0 left-0 right-0 z-30 md:relative md:border-t-2">
+          <div className="win98-panel p-3 border-t-2 border-win98-dark-gray">
             <form onSubmit={sendMessage} className="flex space-x-2">
               <input
                 type="text"
@@ -1072,7 +1073,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
         {/* Right Sidebar with Both Panels */}
         <div className="w-full md:w-80 flex flex-col h-full">
           {/* Show users panel only on Users tab in mobile, always visible on desktop */}
-          <div className={`${activeMobilePanel === 'users' ? 'flex flex-col h-full' : 'hidden'} md:block md:h-auto`}>
+          <div className={`${activeMobilePanel === 'users' ? 'flex flex-col h-full' : 'hidden'} md:flex md:flex-col md:flex-1 md:mt-2`}>
             {/* Online Users Panel */}
             <div className={`flex flex-col flex-1 mb-2 h-full md:h-auto ${activeMobilePanel === 'users' ? '' : 'md:win98-window md:border-l-2 border-win98-dark-gray'}`}>
           <div className="win98-titlebar">
@@ -1123,7 +1124,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
           </div>
 
           {/* Show active chats panel only on Chats tab in mobile, always visible on desktop */}
-          <div className={`${activeMobilePanel === 'activeChats' ? 'flex flex-col h-full' : 'hidden'} md:block md:h-auto`}>
+          <div className={`${activeMobilePanel === 'activeChats' ? 'flex flex-col h-full' : 'hidden'} md:flex md:flex-col md:flex-1`}>
             {/* Active Chats Panel */}
             <div className={`flex flex-col flex-1 h-full md:h-auto ${activeMobilePanel === 'activeChats' ? '' : 'md:win98-window md:border-l-2 border-win98-dark-gray'}`}>
           <div className="win98-titlebar">
