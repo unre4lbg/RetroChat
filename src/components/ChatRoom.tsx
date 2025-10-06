@@ -913,7 +913,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
   }
 
   return (
-    <div className="xp-login-bg font-win98 flex flex-col md:p-5 md:overflow-auto mobile-safe-conatiner mobile-viewport-fix min-h-screen">
+    <div className="xp-login-bg font-win98 flex flex-col md:p-5 md:overflow-auto">
       {/* Header - Fixed on mobile */}
         <div className="win98-titlebar flex items-center justify-between px-2 py-1">
           <div className="flex items-center">
