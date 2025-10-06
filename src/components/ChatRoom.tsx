@@ -1205,6 +1205,4 @@ useEffect(() => {
     window.removeEventListener('orientationchange', setVH);
   };
 },
-};
-
 export default ChatRoom;
