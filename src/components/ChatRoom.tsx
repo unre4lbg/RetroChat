@@ -913,9 +913,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
   }
 
   return (
-    <div className="h-screen xp-login-bg font-win98 flex flex-col md:p-5 md:overflow-hidden">
+    <div className="h-screen xp-login-bg font-win98 flex flex-col md:p-5 md:overflow-auto">
       {/* Header - Fixed on mobile */}
-      <div className="win98-window md:relative fixed top-0 left-0 right-0 md:relative z-50 border-b-0 md:border-b-2">
+      <div className="win98-window md:relative z-50 border-b-0 md:border-b-2">
         <div className="win98-titlebar flex items-center justify-between px-2 py-1">
           <div className="flex items-center">
             <Terminal className="h-4 w-4 mr-1" />
@@ -1007,7 +1007,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
       </div>
 
       {/* Main content with proper spacing for fixed header and tabs on mobile */}
-      <div className="md:flex flex-1 mt-[86px] md:mt-0">
+      <div className="md:flex flex-1 md:mt-0 overflow-hidden">
 
         {/* Chat Area */}
         <div className={`w-full md:flex-1 flex flex-col win98-window chat-window h-full ${activeMobilePanel === 'chat' ? 'block' : 'hidden md:flex'}`}>
@@ -1073,7 +1073,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
         {/* Right Sidebar with Both Panels */}
         <div className="w-full md:w-80 flex flex-col h-full">
           {/* Show users panel only on Users tab in mobile, always visible on desktop */}
-          <div className={`${activeMobilePanel === 'users' ? 'flex flex-col h-full' : 'hidden'} md:flex md:flex-col md:flex-1 md:mt-2`}>
+          <div className={`${activeMobilePanel === 'users' ? 'flex flex-col h-full' : 'hidden'} md:block md:h-auto`}>
             {/* Online Users Panel */}
             <div className={`flex flex-col flex-1 mb-2 h-full md:h-auto ${activeMobilePanel === 'users' ? '' : 'md:win98-window md:border-l-2 border-win98-dark-gray'}`}>
           <div className="win98-titlebar">
@@ -1124,7 +1124,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
           </div>
 
           {/* Show active chats panel only on Chats tab in mobile, always visible on desktop */}
-          <div className={`${activeMobilePanel === 'activeChats' ? 'flex flex-col h-full' : 'hidden'} md:flex md:flex-col md:flex-1`}>
+          <div className={`${activeMobilePanel === 'activeChats' ? 'flex flex-col h-full' : 'hidden'} md:block md:h-auto`}>
             {/* Active Chats Panel */}
             <div className={`flex flex-col flex-1 h-full md:h-auto ${activeMobilePanel === 'activeChats' ? '' : 'md:win98-window md:border-l-2 border-win98-dark-gray'}`}>
           <div className="win98-titlebar">
