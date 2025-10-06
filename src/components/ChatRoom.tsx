@@ -1071,7 +1071,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
         </div>
 
         {/* Right Sidebar with Both Panels */}
-        <div className="w-full md:w-80 flex flex-col h-full">
+        <div className="w-full md:w-80 flex flex-col flex-1">
           {/* Show users panel only on Users tab in mobile, always visible on desktop */}
           <div className={`${activeMobilePanel === 'users' ? 'flex flex-col h-full' : 'hidden'} md:block md:h-auto`}>
             {/* Online Users Panel */}
