@@ -982,7 +982,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
       </div>
 
       {/* Mobile Panel Selector - Fixed under header */}
-      <div className="md:hidden  win98-panel flex z-40 border-t-2 border-win98-light-gray">
+      <div className="md:hidden win98-panel flex z-40 border-t-2 border-win98-light-gray">
         <button
           onClick={() => setActiveMobilePanel('chat')}
           className={`flex-1 py-2 px-1 text-center text-xs ${activeMobilePanel === 'chat' ? 'win98-inset bg-win98-light-gray' : 'win98-button'}`}
@@ -1014,7 +1014,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
           {/* Messages - Extra padding on mobile for fixed input */}
           <div
             ref={scrollRef}
-            className="flex-1 overflow-y-auto irc-chat-container p-2 md:pb-4 bg-white"
+            className="flex-1 overflow-y-auto irc-chat-container p-2 pb-2 md:pb-4 bg-white"
             >
             {messages.map((message) => {
               const timestamp = new Date(message.created_at);
