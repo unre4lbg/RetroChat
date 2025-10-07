@@ -1014,7 +1014,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ onLogout, isAuthenticated }) => {
           {/* Messages - Extra padding on mobile for fixed input */}
           <div
             ref={scrollRef}
-            className="flex-1 overflow-y-auto irc-chat-container p-2 pb-2 md:pb-4 bg-white"
+            className="flex-1 overflow-y-auto irc-chat-container p-2 md:pb-4 bg-white"
             >
             {messages.map((message) => {
               const timestamp = new Date(message.created_at);
