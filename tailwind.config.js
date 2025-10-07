@@ -3,6 +3,10 @@ export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      height: {
+        'screen': '100dvh', // Замяна на h-screen
+        'dvh': '100dvh',
+        },
       colors: {
         'win98-gray': '#ECE9D8',
         'win98-light-gray': '#F0F0F0',
